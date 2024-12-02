@@ -1,4 +1,3 @@
-
 import type { Knex } from 'knex';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
@@ -17,5 +16,7 @@ const knexConfig: Knex.Config = {
     database: configService.get('POSTGRES_DB'),
   },
 };
- 
+// npx knex migrate:make test_chill
+// npx knex migrate:latest
+
 module.exports = knexConfig;

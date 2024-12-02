@@ -7,7 +7,7 @@ import {
 import DatabaseOptions from './databaseOptions';
 import { Pool } from 'pg';
 import DatabaseService from './database.service';
-   
+
 @Global()
 @Module({
   exports: [DatabaseService],

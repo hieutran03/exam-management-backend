@@ -1,4 +1,3 @@
-
 interface DatabaseOptions {
   host: string;
   port: number;
@@ -6,5 +5,5 @@ interface DatabaseOptions {
   password: string;
   database: string;
 }
- 
+
 export default DatabaseOptions;
