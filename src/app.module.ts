@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TeachersModule } from './teachers/teachers.module';
+import { QuestionsModule } from './questions/questions.module';
 import * as Joi from 'Joi';
 import DatabaseModule from './database/database.module';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -29,8 +31,17 @@ import DatabaseModule from './database/database.module';
         POSTGRES_DB: Joi.string().required(),
       }),
     }),
+    QuestionsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        transform: true
+      })
+    }
+  ],
 })
 export class AppModule {}
