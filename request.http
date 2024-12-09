@@ -5,5 +5,5 @@ PATCH  http://localhost:3000/teachers/password/1
 content-type: application/json
 
 {
-  "name": "hahaha"
+  "password": "banhbaotrungcuc"
 }

@@ -7,6 +7,7 @@ import { QuestionsModule } from './questions/questions.module';
 import * as Joi from 'Joi';
 import DatabaseModule from './database/database.module';
 import { APP_PIPE } from '@nestjs/core';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { APP_PIPE } from '@nestjs/core';
       }),
     }),
     QuestionsModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [

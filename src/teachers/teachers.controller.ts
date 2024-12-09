@@ -1,8 +1,8 @@
 import { Controller, Get, Patch, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
-import { ChangePasswordDTO } from 'src/DAL/teachers/dtos/change-password.dto';
+import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { TeacherDTO } from 'src/DAL/teachers/dtos/teacher.dto';
+import { TeacherDTO } from 'src/models/teachers/dtos/teacher.dto';
 
 @Serialize(TeacherDTO)
 @Controller('teachers')
