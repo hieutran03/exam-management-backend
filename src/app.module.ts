@@ -7,6 +7,7 @@ import { QuestionsModule } from './questions/questions.module';
 import * as Joi from 'Joi';
 import DatabaseModule from './database/database.module';
 import { APP_PIPE } from '@nestjs/core';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [
@@ -29,9 +30,12 @@ import { APP_PIPE } from '@nestjs/core';
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
     QuestionsModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [

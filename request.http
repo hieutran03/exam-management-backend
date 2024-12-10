@@ -5,5 +5,24 @@ PATCH  http://localhost:3000/teachers/password/1
 content-type: application/json
 
 {
-  "name": "hahaha"
+  "password": "banhbaotrungcuc"
+}
+
+###
+POST http://localhost:3000/auth/register
+content-type: application/json
+
+{
+  "name": "Toi la banh bao",
+  "username": "banhbao",
+  "password": "12345"
+} 
+
+###
+POST http://localhost:3000/auth/login
+content-type: application/json
+
+{
+  "username": "banhbao",
+  "password": "12345"
 }

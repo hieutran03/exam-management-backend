@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import DatabaseService from '../database/database.service';
 import { plainToInstance } from 'class-transformer';
-import { TeacherModel } from '../DAL/teachers/models/teachers.model';
+import { TeacherModel } from '../models/teachers/teachers.model';
+import RegisterDto from 'src/models/authentication/dtos/register.dto';
 
 @Injectable()
 export class TeachersRepository {
@@ -13,6 +14,16 @@ export class TeachersRepository {
     `);
 
     return plainToInstance(TeacherModel, databaseResponse.rows);
+  }
+
+  async getByUsername(username: string) {
+    const databaseResponse = await this.databaseService.runQuery(
+      `
+        select * from teacher where username=$1
+      `,
+      [username]
+    );
+    return plainToInstance(TeacherModel, databaseResponse.rows[0]);
   }
   async getById(id: number) {
     const databaseResponse = await this.databaseService.runQuery(
@@ -26,6 +37,18 @@ export class TeachersRepository {
       throw new NotFoundException();
     }
     return plainToInstance(TeacherModel, entity);
+  }
+
+  async create(teacher: RegisterDto) {
+    const databaseResponse = await this.databaseService.runQuery(
+      `
+      insert into teacher(name, username, password)
+      values($1, $2, $3)
+      returning *;
+      `,
+      [teacher.name, teacher.username, teacher.password],
+    );
+    return plainToInstance(TeacherModel, databaseResponse.rows[0]);
   }
 
   async delete(id: number) {
