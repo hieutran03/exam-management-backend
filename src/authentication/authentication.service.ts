@@ -3,15 +3,18 @@ import { TeachersService } from 'src/teachers/teachers.service';
 import { RegisterDto } from '../models/authentication/dtos/register.dto';
 import * as bcrypt from 'bcrypt';
 import PostgresErrorCode from 'src/database/postgresErrorCode.enum';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import TokenPayload from './tokenPayload.interface';
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly usersService: TeachersService
+    private readonly usersService: TeachersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
  
-  login(user: any): string {
-    return 'This is a token';
-  }
+  
   
 public async getAuthenticatedUser(username: string, plainTextPassword: string) {
   try {
@@ -48,5 +51,11 @@ private async verifyPassword(plainTextPassword: string, hashedPassword: string) 
       }
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public getCookieWithJwtToken(userId: number) {
+    const payload: TokenPayload = { userId };
+    const token = this.jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
   }
 }
