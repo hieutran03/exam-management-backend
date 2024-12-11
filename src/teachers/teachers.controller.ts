@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
@@ -15,7 +15,9 @@ export class TeachersController {
   }
 
   @Patch('/password/:id')
-  changePassword(@Param('id', ParseIntPipe)id: number, @Body() body: ChangePasswordDTO){
+  changePassword(
+    @Param('id', ParseIntPipe)id: number,
+    @Body() body: ChangePasswordDTO){
     return this.teacherService.updatePassword(id, body.password);
   }
 }

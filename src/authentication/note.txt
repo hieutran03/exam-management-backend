@@ -1,0 +1,1 @@
+Có thể xem local.strategy.ts giống một service. Service sẽ được inject bên trong AuthGuard('local')

@@ -37,7 +37,7 @@ private async verifyPassword(plainTextPassword: string, hashedPassword: string) 
   }
 }
   public async register(registrationData: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registrationData.password, 10);
+    const hashedPassword = await bcrypt.hash(registrationData.password, parseInt(this.configService.get('BCRYPT_SALT_ROUNDS')));
     try {
       const createdUser = await this.usersService.create({
         ...registrationData,
@@ -57,5 +57,9 @@ private async verifyPassword(plainTextPassword: string, hashedPassword: string) 
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+  }
+
+  public getCookieForLogOut() {
+    return 'Authentication=; HttpOnly; Path=/; Max-Age=0';
   }
 }
