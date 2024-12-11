@@ -5,8 +5,9 @@ PATCH  http://localhost:3000/teachers/password/1
 content-type: application/json
 
 {
-  "password": "banhbaotrungcuc"
+  "password": "12345"
 }
+
 
 ###
 POST http://localhost:3000/auth/register
