@@ -9,7 +9,7 @@ import { TeacherDTO } from 'src/models/teachers/dtos/teacher.dto';
 export class TeachersController {
   constructor(private teacherService: TeachersService){}
   
-  @Get()
+  @Get('')
   getAllTeacher(){
     return this.teacherService.find();
   }

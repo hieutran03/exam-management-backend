@@ -2,7 +2,7 @@ import { Controller, Post, Req, Res, Body, UseGuards, HttpCode, Patch } from '@n
 import { RequestWithUser } from './requestWithUsers.interface';
 import { AuthenticationService } from './authentication.service';
 import { Response } from 'express';
-import { RegisterDto } from '../models/authentication/dtos/register.dto';
+import { RegisterDto } from '../../models/authentication/dtos/register.dto';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
 import { TeachersService } from 'src/teachers/teachers.service';
