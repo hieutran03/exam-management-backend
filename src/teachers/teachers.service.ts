@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 export class TeachersService {
   constructor(
     private teacherRepository: TeachersRepository,
-    private configService: ConfigService
+    private configService: ConfigService,
   ){}
   find(){
     return this.teacherRepository.getAll();
@@ -18,6 +18,9 @@ export class TeachersService {
   }
   findByUserName(username: string){
     return this.teacherRepository.getByUsername(username);
+  }
+  findWithDetails(id: number){
+    return this.teacherRepository.getWithDetails(id);
   }
   create(teacher: RegisterDto){
     return this.teacherRepository.create(teacher);
