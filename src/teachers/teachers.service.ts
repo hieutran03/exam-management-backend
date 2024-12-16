@@ -19,6 +19,9 @@ export class TeachersService {
   findByUserName(username: string){
     return this.teacherRepository.getByUsername(username);
   }
+  findWithDetails(id: number){
+    return this.teacherRepository.getWithDetails(id);
+  }
   create(teacher: RegisterDto){
     return this.teacherRepository.create(teacher);
   }

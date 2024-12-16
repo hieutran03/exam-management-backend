@@ -13,28 +13,29 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
- 
   
+  public async getAuthenticatedUser(username: string, plainTextPassword: string) {
+    try {
+      const user = await this.usersService.findByUserName(username);
+      await this.verifyPassword(plainTextPassword, user.password);
+      if(user.role_id){
+        return this.usersService.findWithDetails(user.id);
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
+    }
+  }
   
-public async getAuthenticatedUser(username: string, plainTextPassword: string) {
-  try {
-    const user = await this.usersService.findByUserName(username);
-    await this.verifyPassword(plainTextPassword, user.password);
-    return user;
-  } catch (error) {
-    throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword,
+      hashedPassword
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
+    }
   }
-}
- 
-private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
-  const isPasswordMatching = await bcrypt.compare(
-    plainTextPassword,
-    hashedPassword
-  );
-  if (!isPasswordMatching) {
-    throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
-  }
-}
   public async register(registrationData: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, parseInt(this.configService.get('BCRYPT_SALT_ROUNDS')));
     try {

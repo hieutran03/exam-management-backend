@@ -8,6 +8,8 @@ content-type: application/json
   "password": "12345"
 }
 
+###
+GET http://localhost:3000/teachers/1/details
 
 ###
 POST http://localhost:3000/auth/register
@@ -15,7 +17,7 @@ content-type: application/json
 
 {
   "name": "Toi la banh bao",
-  "username": "banhbao",
+  "username": "banhbao2",
   "password": "12345"
 } 
 
@@ -27,3 +29,18 @@ content-type: application/json
   "username": "banhbao",
   "password": "12345"
 }
+
+###
+POST http://localhost:3000/roles
+content-type: application/json
+
+{
+  "name": "admin",
+  "permissions": [
+    "TEACHER_READ",
+    "TEACHER_MODIFY"
+  ]
+}
+
+###
+GET http://localhost:3000/roles

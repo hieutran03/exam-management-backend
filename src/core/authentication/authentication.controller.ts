@@ -1,5 +1,5 @@
 import { Controller, Post, Req, Res, Body, UseGuards, HttpCode, Patch } from '@nestjs/common';
-import { RequestWithUser } from './requestWithUsers.interface';
+import { RequestWithUser, RequestWithUserDetails } from './requestWithUsers.interface';
 import { AuthenticationService } from './authentication.service';
 import { Response } from 'express';
 import { RegisterDto } from '../../models/authentication/dtos/register.dto';
@@ -7,7 +7,9 @@ import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
 import { TeachersService } from 'src/teachers/teachers.service';
 import JwtAuthenticationGuard from './jwtAuthentication.guard';
-import { log } from 'console';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { TeacherDTO } from 'src/models/teachers/dtos/teacher.dto';
+@Serialize(TeacherDTO)
 @Controller('auth')
 export class AuthenticationController {
   constructor(
@@ -22,7 +24,7 @@ export class AuthenticationController {
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
-  login(@Req() request: RequestWithUser, @Res({passthrough: true}) response: Response) {
+  login(@Req() request: RequestWithUserDetails, @Res({passthrough: true}) response: Response) {
     const { user } = request;
     const token = this.authenticationService.getCookieWithJwtToken(user.id);
     response.setHeader('Set-Cookie', token);
