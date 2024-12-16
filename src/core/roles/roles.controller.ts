@@ -1,6 +1,8 @@
-import { Body, Controller, Get, HttpCode, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, Post, Put } from "@nestjs/common";
 import { RolesService } from "./roles.service";
 import { CreateRoleDTO } from "src/models/role/dtos/create-role.dto";
+import { UpdateRoleDTO } from "src/models/role/dtos/update-role.dto";
+
 @Controller('roles')
 export default class RolesController{
   constructor(private rolesService: RolesService){}
@@ -23,21 +25,13 @@ export default class RolesController{
   @HttpCode(201)
   @Post()
   createRole(@Body() body : CreateRoleDTO){
-    return this.rolesService.create(body.name, body.permissions);
+    return this.rolesService.create(body);
+
   }
 
-  @Patch(':id')
-  updateRole(@Body('name') name: string, @Body('id') id: number){
-    return this.rolesService.update(id, name);
+  @Put(':id')
+  updateRole(@Param('id') id: number, @Body() body: UpdateRoleDTO){
+    return this.rolesService.update(id, body);
   }
 
-  // @Patch(':id/permissions')
-  // insertPermission(@Body('permission') permission: string, @Body('id') id: number){
-  //   return this.rolesService.insertPermission(id, permission);
-  // }
-
-  // @Patch(':id/permissions')
-  // removePermission(@Body('permission') permission: string, @Body('id') id: number){
-  //   return this.rolesService.removePermission(id, permission);
-  // }
 }
