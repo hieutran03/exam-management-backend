@@ -8,8 +8,6 @@ const PermissionGuard = (permission: PermissionEnum): Type<CanActivate> => {
     async canActivate(context: ExecutionContext): Promise<boolean> {
       await super.canActivate(context);
       const request = context.switchToHttp().getRequest<RequestWithUserDetails>();
-      console.log(request.user)
-      console.log(permission)
       return request.user.rolePermission.permissions.includes(permission);
     }
   }

@@ -9,65 +9,84 @@ export class TeachersRepository {
   constructor(private readonly databaseService: DatabaseService) { }
 
   async getAll() {
-    const databaseResponse = await this.databaseService.runQuery(`
-      select * from teacher where deleted = 'false'
-    `);
-    return databaseResponse.rows;
+    try {
+      const databaseResponse = await this.databaseService.runQuery(`
+        select * from teacher where deleted = 'false'
+      `);
+      return databaseResponse.rows;
+    } catch (error) {
+      throw new Error(error);
+    }
+    
   }
 
   async getByUsername(username: string) {
-    const databaseResponse = await this.databaseService.runQuery(
-      `
-        select * from teacher where username=$1
-      `,
-      [username]
-    );
-    return new TeacherModel(databaseResponse.rows[0]);
+    try {
+      const databaseResponse = await this.databaseService.runQuery(
+        `
+          select * from teacher where username=$1
+        `,
+        [username]
+      );
+      return new TeacherModel(databaseResponse.rows[0]);
+    } catch (error) {
+      throw new Error(error);
+    }
+    
   }
   async getById(id: number) {
-    const databaseResponse = await this.databaseService.runQuery(
-      `
-      select * from teacher where id=$1
-      `,
-      [id],
-    );
-    const entity = databaseResponse.rows[0];
-    if (!entity) {
-      throw new NotFoundException();
+    try {
+      const databaseResponse = await this.databaseService.runQuery(
+        `
+        select * from teacher where id=$1
+        `,
+        [id],
+      );
+      const entity = databaseResponse.rows[0];
+      if (!entity) {
+        throw new NotFoundException();
+      }
+      return new TeacherModel(entity);
+    } catch (error) {
+      throw new Error(error);
     }
-    return new TeacherModel(entity);
   }
 
-  async getWithDetails(id: number) {    
-    const userWithRoles = await this.databaseService.runQuery(
-      `
-      select t.id as id, t.name as name, t.username as username, t.created_at as created_at,
-      t.password as password, t.deleted as deleted, t.role_id as role_id,
-      r.name as role_name
-      from teacher t
-      join role r on t.role_id = r.id
-      where t.id=$1
-      `,
-      [id],
-    );
-    if(userWithRoles.rows.length === 0) {
-      throw new NotFoundException();
+  async getWithDetails(id: number) {
+    try {
+      const userWithRoles = await this.databaseService.runQuery(
+        `
+        select t.id as id, t.name as name, t.username as username, t.created_at as created_at,
+        t.password as password, t.deleted as deleted, t.role_id as role_id,
+        r.name as role_name
+        from teacher t
+        join role r on t.role_id = r.id
+        where t.id=$1
+        `,
+        [id],
+      );
+      if(userWithRoles.rows.length === 0) {
+        throw new NotFoundException();
+      }
+      const permissinonResponse = await this.databaseService.runQuery(
+        `
+        select array_to_json(array(
+          select permission
+          from permission_based
+          where role_id = $1
+        )) as permissions
+        `,
+        [userWithRoles.rows[0].role_id],
+      );
+      const result = {
+        ...userWithRoles.rows[0],
+        permissions: permissinonResponse.rows[0].permissions,
+      }
+      return  new TeachersWithDetailsModel(result);
+    } catch (error) {
+      throw new Error(error);
     }
-    const permissinonResponse = await this.databaseService.runQuery(
-      `
-      select array_to_json(array(
-        select permission
-        from permission_based
-        where role_id = $1
-      )) as permissions
-      `,
-      [userWithRoles.rows[0].role_id],
-    );
-    const result = {
-      ...userWithRoles.rows[0],
-      permissions: permissinonResponse.rows[0].permissions,
-    }
-    return  new TeachersWithDetailsModel(result);
+    
   }
 
   async create(teacher: RegisterDto) {

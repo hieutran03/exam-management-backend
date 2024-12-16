@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import PermissionEnum from './permission.enum';
 import RolesRepository from './roles.repository';
+import { CreateRoleDTO } from 'src/models/role/dtos/create-role.dto';
+import { UpdateRoleDTO } from 'src/models/role/dtos/update-role.dto';
 
 @Injectable()
 export class RolesService {
@@ -18,23 +19,15 @@ export class RolesService {
     return this.rolesRepository.getWithDetails(id);
   }
 
-  async create(name: string, permissions: PermissionEnum[]) {
-    const role = await this.rolesRepository.create(name);
-    permissions.forEach(async (permission) => {
-      await this.insertPermission(role.id, permission);
-    });
+  async create(roleData: CreateRoleDTO) {
+
+    const role = await this.rolesRepository.create(roleData);
+    
     return role;
   }
 
-  async update(id: number, name: string) {
-    return this.rolesRepository.update(id, name);
+  async update(id: number, roleData: UpdateRoleDTO) {
+    return this.rolesRepository.update(id, roleData);
   }
 
-  async insertPermission(roleId: number, permissionName: PermissionEnum) {
-    return this.rolesRepository.insertPermission(roleId, permissionName);
-  }
-
-  async removePermission(roleId: number, permissionName: PermissionEnum) {
-    return this.rolesRepository.deletePermission(roleId, permissionName);
-  }
 }
