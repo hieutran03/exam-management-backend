@@ -39,6 +39,10 @@ export class AuthenticationService {
   public async register(registrationData: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, parseInt(this.configService.get('BCRYPT_SALT_ROUNDS')));
     try {
+      const checkUser = await this.usersService.findByUserName(registrationData.username);
+      if(checkUser){
+        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      }
       const createdUser = await this.usersService.create({
         ...registrationData,
         password: hashedPassword
@@ -46,10 +50,7 @@ export class AuthenticationService {
       createdUser.password = undefined;
       return createdUser;
     } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException('User with that username already exists', HttpStatus.BAD_REQUEST);
-      }
-      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
   }
 
