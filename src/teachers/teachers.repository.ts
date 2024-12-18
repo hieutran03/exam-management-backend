@@ -70,7 +70,7 @@ export class TeachersRepository {
         [id],
       );
       if(userWithRoles.rows.length === 0) {
-        throw new NotFoundException();
+        return this.getById(id);
       }
       const permissinonResponse = await this.databaseService.runQuery(
         `
