@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res, Body, UseGuards, HttpCode, Patch } from '@nestjs/common';
+import { Controller, Post, Req, Res, Body, UseGuards, HttpCode, Patch, HttpException, HttpStatus } from '@nestjs/common';
 import { RequestWithUser, RequestWithUserDetails } from './requestWithUsers.interface';
 import { AuthenticationService } from './authentication.service';
 import { Response } from 'express';
@@ -18,7 +18,12 @@ export class AuthenticationController {
   ) {}
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
-    return this.authenticationService.register(registrationData);
+    try {
+      const user = await this.authenticationService.register(registrationData);
+      return user;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @HttpCode(200)

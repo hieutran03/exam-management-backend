@@ -22,8 +22,8 @@ import CoreModule from './core/core.module';
         JWT_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
-    CoreModule,
     QuestionsModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [

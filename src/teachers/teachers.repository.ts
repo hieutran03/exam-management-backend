@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import DatabaseService from '../core/database/database.service';
 import { TeacherModel } from '../models/teachers/teachers.model';
 import RegisterDto from 'src/models/authentication/dtos/register.dto';
 import { TeachersWithDetailsModel } from 'src/models/teachers/teachersWithDetails.model';
+import PostgresErrorCode from 'src/core/database/postgresErrorCode.enum';
 
 @Injectable()
 export class TeachersRepository {
@@ -28,6 +29,9 @@ export class TeachersRepository {
         `,
         [username]
       );
+      if(databaseResponse.rows.length === 0) {
+        return null;
+      }
       return new TeacherModel(databaseResponse.rows[0]);
     } catch (error) {
       throw new Error(error);
@@ -66,7 +70,7 @@ export class TeachersRepository {
         [id],
       );
       if(userWithRoles.rows.length === 0) {
-        throw new NotFoundException();
+        return this.getById(id);
       }
       const permissinonResponse = await this.databaseService.runQuery(
         `
@@ -90,15 +94,28 @@ export class TeachersRepository {
   }
 
   async create(teacher: RegisterDto) {
-    const databaseResponse = await this.databaseService.runQuery(
-      `
-      insert into teacher(name, username, password)
-      values($1, $2, $3)
-      returning *;
-      `,
-      [teacher.name, teacher.username, teacher.password],
-    );
-    return new TeacherModel(databaseResponse.rows[0]);
+    const client = await this.databaseService.getPoolClient()
+    try {
+      await client.query('begin');
+      const databaseResponse = await client.query(
+        `
+        insert into teacher(name, username, password)
+        values($1, $2, $3)
+        returning *;
+        `,
+        [teacher.name, teacher.username, teacher.password],
+      );
+      await client.query('commit');
+      return new TeacherModel(databaseResponse.rows[0]);
+    } catch (error) {
+      await client.query('rollback');
+      if(error.code === PostgresErrorCode.UniqueViolation) {
+        throw new ConflictException('Username already exists');
+      }
+    } finally {
+      client.release();
+    }
+    
   }
 
   async delete(id: number) {
