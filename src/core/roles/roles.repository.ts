@@ -8,7 +8,6 @@ import { PoolClient } from "pg";
 import getDifferenceBetweenArrays from "src/utils/getDifferentBetweenArrays";
 import PostgresErrorCode from "../database/postgresErrorCode.enum";
 import { CreateRoleDTO } from "src/models/role/dtos/create-role.dto";
-import { throwError } from "rxjs";
 
 @Injectable()
 export default class RolesRepository {
@@ -63,7 +62,7 @@ export default class RolesRepository {
       );
       return databaseResponse.rows[0].permissions;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
     
   }

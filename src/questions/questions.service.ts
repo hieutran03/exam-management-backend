@@ -37,14 +37,21 @@ export class QuestionsService {
   }
   async update(id: number, questionData: UpdateQuestionDTO){
     try {
-      return this.questionRepository.update(id, questionData);
+      const question = this.questionRepository.update(id, questionData);
+      if (!question) {
+        throw new HttpException('Question not found', 404);
+      }
     } catch (error) {
       throw error;
     }
   }
   async delete(id: number){
     try {
-      return this.questionRepository.delete(id);
+      const question = this.questionRepository.delete(id);
+      if (!question) {
+        throw new HttpException('Question not found', 404);
+      }
+      return question
     } catch (error) {
       throw error;
     }
@@ -77,9 +84,7 @@ export class QuestionsService {
   async findMyQuestionWithDetails(teacher_id: number, id: number){
     try {
       const question = await this.findWithDetails(id);
-      if (!question) {
-        throw new HttpException('Question not found', 404);
-      }
+      
       if(teacher_id !== question.teacher_id){
         throw new HttpException('Unauthorized', 401);
       }
@@ -94,9 +99,6 @@ export class QuestionsService {
   async updateMyQuestion(teacher_id: number, question_id: number, questionData: CreateQuestionDTO){
     try {
       const question = await this.questionRepository.findById(question_id);
-      if (!question) {
-        throw new HttpException('Question not found', 404);
-      }
       if(teacher_id !== question.teacher_id){
         throw new HttpException('Unauthorized', 401);
       }
@@ -109,9 +111,6 @@ export class QuestionsService {
   async deleteMyQuestion(teacher_id: number, id: number){
     try {
       const question = await this.questionRepository.findById(id);
-      if (!question) {
-        throw new HttpException('Question not found', 404);
-      }
       if(teacher_id !== question.teacher_id){
         throw new HttpException('Unauthorized', 401);
       }
