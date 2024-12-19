@@ -3,6 +3,7 @@ import DatabaseModule from './database/database.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { RolesModule } from './roles/roles.module';
+import { ParameterModule } from './parameter/parameter.module';
 @Global()
 @Module({
   
@@ -20,11 +21,13 @@ import { RolesModule } from './roles/roles.module';
       }),
     }),
     RolesModule,
+    ParameterModule,
   ],
   exports: [
     DatabaseModule,
     AuthenticationModule,
     RolesModule,
+    ParameterModule,
   ],
 })
 export default class CoreModule {}
