@@ -99,11 +99,11 @@ export class TeachersRepository {
       await client.query('begin');
       const databaseResponse = await client.query(
         `
-        insert into teacher(name, username, password)
-        values($1, $2, $3)
+        insert into teacher(name, username, password, role_id)
+        values($1, $2, $3, $4)
         returning *;
         `,
-        [teacher.name, teacher.username, teacher.password],
+        [teacher.name, teacher.username, teacher.password, teacher.role_id],
       );
       await client.query('commit');
       return new TeacherModel(databaseResponse.rows[0]);
@@ -119,17 +119,27 @@ export class TeachersRepository {
   }
 
   async delete(id: number) {
-    const databaseResponse = await this.databaseService.runQuery(
-      `
-      update teacher
-        set
-          deleted = 'true'
-        where id=$1
-      `,
-      [id],
-    );
-    if (databaseResponse.rowCount === 0) {
-      throw new NotFoundException();
+    const client = await this.databaseService.getPoolClient();
+    try {
+      await client.query('begin');
+      const databaseResponse = await client.query(
+        `
+        update teacher
+        set deleted = 'true'
+        where id = $1
+        returning *;
+        `,
+        [id],
+      );
+      await client.query('commit');
+      if(databaseResponse.rowCount === 0) {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      await client.query('rollback');
+      throw new Error(error);
+    } finally {
+      client.release();
     }
   }
   async update(id: number, teacher: Partial<TeacherModel>) {
@@ -137,24 +147,31 @@ export class TeachersRepository {
     // coalesce (A, B): if (A == NULL(Postgres)) => return B else return A
     // name = coalesce (nullif($1, ''), name) => means that if $1 == '' 
     // then name column will be ignored
-    const databaseResponse = await this.databaseService.runQuery(
-      `update teacher 
-        set 
-          name = coalesce (nullif($1, ''), name),
-          username = coalesce (nullif($2, ''), username),
-          password = coalesce (nullif($3, ''), password)
-        where id = $4
-      returning *;
-      `,
-      [
-        teacher.name || '',
-        teacher.username || '',
-        teacher.password || '',
-        id
-      ],
-    );
-    if (databaseResponse.rowCount === 0) {
-      throw new NotFoundException();
+    const client = await this.databaseService.getPoolClient();
+    try {
+      await client.query('begin');
+      const databaseResponse = await client.query(
+        `
+        update teacher
+        set name = coalesce (nullif($1, ''), name),
+        username = coalesce (nullif($2, ''), username),
+        password = coalesce (nullif($3, ''), password),
+        role_id = cast(coalesce (nullif($4, ''), cast(role_id as text)) as integer)
+        where id = $5
+        returning *;
+        `,
+        [teacher.name, teacher.username, teacher.password, teacher.role_id, id],
+      );
+      await client.query('commit');
+      if(databaseResponse.rowCount === 0) {
+        throw new NotFoundException();
+      }
+      return new TeacherModel(databaseResponse.rows[0]);
+    } catch (error) {
+      await client.query('rollback');
+      throw new Error(error);
+    } finally {
+      client.release();
     }
   }
 }

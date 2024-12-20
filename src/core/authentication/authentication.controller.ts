@@ -16,15 +16,15 @@ export class AuthenticationController {
     private readonly authenticationService: AuthenticationService,
     private readonly userService: TeachersService
   ) {}
-  @Post('register')
-  async register(@Body() registrationData: RegisterDto) {
-    try {
-      const user = await this.authenticationService.register(registrationData);
-      return user;
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
-    }
-  }
+  // @Post('register')
+  // async register(@Body() registrationData: RegisterDto) {
+  //   try {
+  //     const user = await this.authenticationService.register(registrationData);
+  //     return user;
+  //   } catch (error) {
+  //     throw new HttpException(error, HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
