@@ -7,6 +7,7 @@ import { QuestionsModule } from './questions/questions.module';
 import * as Joi from 'Joi';
 import { APP_PIPE } from '@nestjs/core';
 import { ExamsModule } from './exams/exams.module';
+import { GradeModule } from './grade/grade.module';
 import CoreModule from './core/core.module';
 
 @Module({
@@ -26,6 +27,7 @@ import CoreModule from './core/core.module';
     QuestionsModule,
     CoreModule,
     ExamsModule,
+    GradeModule,
   ],
   controllers: [AppController],
   providers: [
