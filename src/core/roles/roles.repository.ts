@@ -51,8 +51,18 @@ export default class RolesRepository {
 
   async getPermissions(id: number, client?: PoolClient){
     try {
-      const queryFunction = client ? client.query : this.databaseService.runQuery;
-      const databaseResponse = await queryFunction(
+      if(client){
+        const databaseResponse = await client.query(
+          `select array_to_json(array(
+            select permission
+            from permission_based
+            where role_id = $1
+            )) as permissions`,
+          [id]
+        );
+        return databaseResponse.rows[0].permissions;
+      }
+      const databaseResponse = await this.databaseService.runQuery(
         `select array_to_json(array(
           select permission
           from permission_based

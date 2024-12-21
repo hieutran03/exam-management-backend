@@ -13,14 +13,14 @@ export default class RolesController{
   }
 
   @Get(':id')
-  getRole(id: number){
-    return this.rolesService.getById(id);
-  }
-
-  @Get(':id/details')
-  getRoleWithDetails(id: number){
+  getRole(@Param('id')id: number){
     return this.rolesService.getWithDetails(id);
   }
+
+  // @Get(':id/details')
+  // getRoleWithDetails(id: number){
+  //   return this.rolesService.getWithDetails(id);
+  // }
 
   @HttpCode(201)
   @Post()
