@@ -1,7 +1,7 @@
 import { Controller, Get, Patch, Param, Body, ParseIntPipe, UseGuards, Post} from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from 'src/common/interceptors/serialize.interceptor';
 import { TeacherDTO } from 'src/models/teachers/dtos/teacher.dto';
 import PermissionGuard from 'src/core/roles/permission.guard';
 import PermissionEnum from 'src/core/roles/permission.enum';

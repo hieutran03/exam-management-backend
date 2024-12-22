@@ -1,8 +1,8 @@
 import { IsNumber, IsString } from "class-validator";
 
 export class CreateGradeDTO {
-  @IsNumber()
-  exam_id: number;
+  // @IsNumber()
+  // exam_id: number;
   @IsNumber()
   student_id: number;
   @IsString()

@@ -156,7 +156,7 @@ export class TeachersRepository {
         set name = coalesce (nullif($1, ''), name),
         username = coalesce (nullif($2, ''), username),
         password = coalesce (nullif($3, ''), password),
-        role_id = cast(coalesce (nullif($4, ''), cast(role_id as text)) as integer)
+        role_id = cast(coalesce (nullif(cast($4 as text), ''), cast(role_id as text)) as integer)
         where id = $5
         returning *;
         `,

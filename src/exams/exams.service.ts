@@ -2,14 +2,15 @@ import { HttpException, Injectable } from '@nestjs/common';
 import ExamsRepository from './exams.repository';
 import CreateExamDTO from 'src/models/exams/dtos/create-exam.dto';
 import { UpdateExamDTO } from 'src/models/exams/dtos/update-exam.dto';
+import { IGetByIdMethod } from 'src/common/interface/getByIdMethod.interface';
 
 @Injectable()
-export class ExamsService {
+export class ExamsService implements IGetByIdMethod {
   constructor(
     private readonly examsRepository: ExamsRepository,
   ) {}
-  async getAll() {
-    return await this.examsRepository.getAll().catch((error) => {
+  async getAll(teacher_id?: number) {
+    return await this.examsRepository.getAll(teacher_id).catch((error) => {
       throw error;
     });
   }
@@ -45,36 +46,5 @@ export class ExamsService {
       throw new HttpException('Exam not found', 404);
     }
     return exam;
-  }
-
-  // for my-exams api
-  async getAllMyExams(teacher_id: number) {
-    return await this.examsRepository.getAllMyExams(teacher_id).catch((error) => {
-      throw error;
-    });
-  }
-
-  async getMyExamDetailsById(teacher_id: number, id: number) {
-    const exam = await this.getById(id);
-    if (exam.teacher_id !== teacher_id) {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.examsRepository.getDetailsById(id)
-  }
-
-  async updateMyExam(teacher_id: number, id: number, data: UpdateExamDTO) {
-    const exam = await this.getById(id);
-    if (exam.teacher_id !== teacher_id) {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.update(id, data);
-  }
-
-  async deleteMyExam(teacher_id: number, id: number) {
-    const exam = await this.getById(id);
-    if (exam.teacher_id !== teacher_id) {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.delete(id);
   }
 }

@@ -2,19 +2,19 @@ import { HttpException, Injectable } from '@nestjs/common';
 import QuestionsRepository from './questions.repository';
 import CreateQuestionDTO from 'src/models/questions/dtos/create-question.dto';
 import UpdateQuestionDTO from 'src/models/questions/dtos/update-question.dto';
+import { IGetByIdMethod } from 'src/common/interface/getByIdMethod.interface';
 
 @Injectable()
-export class QuestionsService {
+export class QuestionsService implements IGetByIdMethod{
   constructor(private questionRepository: QuestionsRepository) {}
-  //logic for api: /questions/*(permission-based)
   findAll(){
     try {
-      return this.questionRepository.findAllWithDetails();
+      return this.questionRepository.findAllWithDetals();
     } catch (error) {
       throw error; 
     }
   }
-  findById(id: number){
+  getById(id: number){
     try {
       return this.questionRepository.findById(id);
     } catch (error) {
@@ -52,69 +52,6 @@ export class QuestionsService {
         throw new HttpException('Question not found', 404);
       }
       return question
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  //logic for api: questions/my-questions/*
-  async findAllMyQuestions(teacher_id: number){
-    try {
-      return this.questionRepository.findAllMyQuestionsWithDetals(teacher_id);
-    } catch (error) {
-      throw error;
-    }
-  }
-  
-  // async findMyQuestionById(teacher_id: number, id: number){
-  //   try {
-  //     const question = await this.findById(id);
-  //     if (!question) {
-  //       throw new HttpException('Question not found', 404);
-  //     }
-  //     if(teacher_id !== question.teacher_id){
-  //       throw new HttpException('Unauthorized', 401);
-  //     }
-  //     return question;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-  async findMyQuestionWithDetails(teacher_id: number, id: number){
-    try {
-      const question = await this.findWithDetails(id);
-      
-      if(teacher_id !== question.teacher_id){
-        throw new HttpException('Unauthorized', 401);
-      }
-      return question;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  //Note: create function will be shared with the permission-based api
-  
-  async updateMyQuestion(teacher_id: number, question_id: number, questionData: CreateQuestionDTO){
-    try {
-      const question = await this.questionRepository.findById(question_id);
-      if(teacher_id !== question.teacher_id){
-        throw new HttpException('Unauthorized', 401);
-      }
-      return this.questionRepository.update(question_id, questionData);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async deleteMyQuestion(teacher_id: number, id: number){
-    try {
-      const question = await this.questionRepository.findById(id);
-      if(teacher_id !== question.teacher_id){
-        throw new HttpException('Unauthorized', 401);
-      }
-      return this.questionRepository.delete(id);
     } catch (error) {
       throw error;
     }

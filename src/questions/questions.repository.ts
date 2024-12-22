@@ -6,20 +6,20 @@ import UpdateQuestionDTO from "src/models/questions/dtos/update-question.dto";
 @Injectable()
 export default class QuestionsRepository {
   constructor(private readonly databaseService: DatabaseService) {}
-  async findAllWithDetails() {
-    const databaseResponse = await this.databaseService.runQuery(`
-      select q.id, q.content, c.name as course_name, 
-      ql.name as question_level_name, t.name as teacher_name
-      from question q
-      join course c on c.id = q.course_id
-      join question_level ql on ql.id = q.question_level_id
-      join teacher t on t.id = q.teacher_id
-      where q.deleted = false
-    `)
-    return databaseResponse.rows;
-  }
+  // async findAllWithDetails() {
+  //   const databaseResponse = await this.databaseService.runQuery(`
+  //     select q.id, q.content, c.name as course_name, 
+  //     ql.name as question_level_name, t.name as teacher_name
+  //     from question q
+  //     join course c on c.id = q.course_id
+  //     join question_level ql on ql.id = q.question_level_id
+  //     join teacher t on t.id = q.teacher_id
+  //     where q.deleted = false
+  //   `)
+  //   return databaseResponse.rows;
+  // }
 
-  async findAllMyQuestionsWithDetals(teacher_id: number) {
+  async findAllWithDetals(teacher_id?: number) {
     const databaseResponse = await this.databaseService.runQuery(`
       select q.id, q.content, c.name as course_name, 
       ql.name as question_level_name, t.name as teacher_name
@@ -27,7 +27,9 @@ export default class QuestionsRepository {
       join course c on c.id = q.course_id
       join question_level ql on ql.id = q.question_level_id
       join teacher t on t.id = q.teacher_id
-      where q.teacher_id = $1 and q.deleted = false
+      where 
+        q.teacher_id =  cast(coalesce(nullif(cast($1 as text), ''), cast (q.teacher_id as text)) as integer)
+        and q.deleted = false
     `, [teacher_id]);
     return databaseResponse.rows;
   }

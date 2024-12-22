@@ -4,34 +4,25 @@ import DatabaseService from "src/core/database/database.service";
 import PostgresErrorCode from "src/core/database/postgresErrorCode.enum";
 import CreateExamDTO from "src/models/exams/dtos/create-exam.dto";
 import { UpdateExamDTO } from "src/models/exams/dtos/update-exam.dto";
-import getDifferenceBetweenArrays from "src/utils/getDifferentBetweenArrays";
+import getDifferenceBetweenArrays from "src/common/utils/getDifferentBetweenArrays.util";
 
 @Injectable()
 export default class ExamsRepository {
   constructor(private readonly databaseService: DatabaseService) {}
-  async getAll(){
+  async getAll(teacher_id?: number){
     try {
       const databaseResponse = await this.databaseService.runQuery(`
         select * from exam
-        where deleted = false;
-      `);
+        where 
+          deleted = false
+          and teacher_id = cast(coalesce(nullif(cast($1 as text), ''), cast (teacher_id as text)) as integer);
+      `, [teacher_id]);
       return databaseResponse.rows;
     } catch (error) {
       throw error;
     }
   } 
 
-  async getAllMyExams(teacher_id: number){
-    try {
-      const databaseResponse = await this.databaseService.runQuery(`
-        select * from exam
-        where teacher_id = $1 and deleted = false;
-      `, [teacher_id]);
-      return databaseResponse.rows;
-    } catch (error) {
-      throw error;
-    }
-  }
   async getById(id: number){
     try {
       const databaseResponse = await this.databaseService.runQuery(`

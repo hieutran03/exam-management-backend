@@ -4,7 +4,7 @@ import { CreateGradeDTO } from "src/models/grade/dtos/create-grade.dto";
 import { UpdateGradeDTO } from "src/models/grade/dtos/update-grade.dto";
 
 @Injectable()
-export class GradeRepository{
+export class ExamResultRepository{
   constructor(private readonly databaseService: DatabaseService){}
   
   async findAllByExamId(exam_id: number){
