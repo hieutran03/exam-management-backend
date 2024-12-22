@@ -3,7 +3,7 @@ import type { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
   return await knex.raw(`
-    creata table exam_result(
+    create table exam_result(
       exam_id int not null,
       student_id int not null,
       student_name varchar(255) not null,
@@ -11,8 +11,7 @@ export async function up(knex: Knex): Promise<void> {
       score_text varchar(255) not null,
       note text,
       primary key(exam_id, student_id),
-      foreign key(exam_id) references exam(id),
-      foreign key(student_id) references student(id)
+      foreign key(exam_id) references exam(id) 
     )
   `)
 }

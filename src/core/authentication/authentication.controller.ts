@@ -15,15 +15,6 @@ export class AuthenticationController {
     private readonly authenticationService: AuthenticationService,
     private readonly userService: TeachersService
   ) {}
-  // @Post('register')
-  // async register(@Body() registrationData: RegisterDto) {
-  //   try {
-  //     const user = await this.authenticationService.register(registrationData);
-  //     return user;
-  //   } catch (error) {
-  //     throw new HttpException(error, HttpStatus.BAD_REQUEST);
-  //   }
-  // }
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
@@ -32,7 +23,6 @@ export class AuthenticationController {
     const { user } = request;
     const token = this.authenticationService.getCookieWithJwtToken(user.id);
     response.setHeader('Set-Cookie', token);
-    // return token;
     return user;
   }
 
@@ -48,6 +38,5 @@ export class AuthenticationController {
   @Post('logout')
   logout(@Res({passthrough: true}) response: Response){
     response.setHeader('Set-Cookie', this.authenticationService.getCookieForLogOut());
-    return response.send();
   }
 }

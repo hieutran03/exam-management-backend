@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import DatabaseService from "src/core/database/database.service";
-import { CreateGradeDTO } from "src/models/grade/dtos/create-grade.dto";
-import { UpdateGradeDTO } from "src/models/grade/dtos/update-grade.dto";
+import { CreateExamResultDTO } from "src/models/grade/dtos/create-exam-result.dto";
+import { CreateStudentResultDTO } from "src/models/grade/dtos/create-studtent-result.dto";
+import { UpdateExamResultDTO } from "src/models/grade/dtos/update-exam-result.dto";
+import { UpdateStudentResultDTO } from "src/models/grade/dtos/update-student-result.dto";
 
 @Injectable()
 export class ExamResultRepository{
@@ -47,16 +49,14 @@ export class ExamResultRepository{
     }
   }
   
-
-
-  async create(exam_id: number ,data: CreateGradeDTO){
+  async create(exam_id: number, student_id: number ,data: CreateStudentResultDTO){
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');
       const databaseResponse = await client.query(`
         insert into exam_result(exam_id, student_id, student_name, score, score_text, note)
         values($1, $2, $3, $4, $5, $6) returning *;
-        `, [exam_id, data.student_id, data.student_name, data.score, data.score_text, data.note]);
+        `, [exam_id, student_id, data.student_name, data.score, data.score_text, data.note]);
       await client.query('commit');
       return databaseResponse.rows[0];
     } catch (error) {
@@ -64,7 +64,7 @@ export class ExamResultRepository{
     }
   }
  
-  async createMany(exam_id: number, data: CreateGradeDTO[]){
+  async createMany(exam_id: number, data: CreateExamResultDTO[]){
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');
@@ -80,7 +80,7 @@ export class ExamResultRepository{
     }
   }
 
-  async update(exam_id: number, data: UpdateGradeDTO){
+  async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO){
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');
@@ -88,7 +88,7 @@ export class ExamResultRepository{
         update exam_result set
         student_name = $1, score = $2, score_text = $3, note = $4
         where exam_id = $5 and student_id = $6 returning *;
-      `, [data.student_name, data.score, data.score_text, data.note, exam_id, data.student_id]
+      `, [data.student_name, data.score, data.score_text, data.note, exam_id, student_id]
       );
       await client.query('commit');
       return databaseResponse.rows[0];
@@ -97,7 +97,7 @@ export class ExamResultRepository{
     }
   }
 
-  async updateMany(exam_id: number,data: UpdateGradeDTO[]){
+  async updateMany(exam_id: number,data: UpdateExamResultDTO[]){
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');

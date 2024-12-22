@@ -10,7 +10,8 @@ export class VerifyIdInterceptor implements NestInterceptor, IGetByIdMethod{
   async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-
+    if(request.params.id === undefined)
+      return next.handle();
     const dataReponse = await this.getById(request.params.id);
     if(user.id !== dataReponse.teacher_id){
       throw new HttpException('Unauthorized', 401);

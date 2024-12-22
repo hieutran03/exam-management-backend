@@ -1,10 +1,6 @@
 import { IsNumber, IsString } from "class-validator";
 
-export class UpdateGradeDTO {
-  // @IsNumber()
-  // exam_id: number;
-  @IsNumber()
-  student_id: number;
+export class CreateStudentResultDTO {
   @IsString()
   student_name: string;
   @IsNumber()
