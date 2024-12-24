@@ -32,7 +32,11 @@ export class TeachersService {
     return this.teacherRepository.update(id, {password});
   }
 
-  update(id: number, teacher: UpdateTeacherDTO){
+  async update(id: number, teacher: UpdateTeacherDTO){
     return this.teacherRepository.update(id, teacher);
+  }
+
+  async delete(id: number){
+    return this.teacherRepository.delete(id);
   }
 }

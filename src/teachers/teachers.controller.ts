@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, Body, ParseIntPipe, UseGuards, Post} from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body, ParseIntPipe, UseGuards, Post, Delete} from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
 import { Serialize } from 'src/common/interceptors/serialize.interceptor';
@@ -55,5 +55,11 @@ export class TeachersController {
     @Param('id', ParseIntPipe)id: number,
     @Body() body: UpdateTeacherDTO){
     return this.teacherService.update(id, body);
+  }
+
+  @UseGuards(PermissionGuard(PermissionEnum.TEACHER_MODIFY))
+  @Delete('/:id')
+  deleteTeacher(@Param('id', ParseIntPipe) id: number){
+    return this.teacherService.delete(id);
   }
 }

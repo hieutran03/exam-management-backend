@@ -12,10 +12,35 @@ export default class ExamsRepository {
   async getAll(teacher_id?: number){
     try {
       const databaseResponse = await this.databaseService.runQuery(`
-        select * from exam
-        where 
-          deleted = false
-          and teacher_id = cast(coalesce(nullif(cast($1 as text), ''), cast (teacher_id as text)) as integer);
+        select 
+          e.id,
+          e.total_score, 
+          e.time, 
+          e.exam_date, 
+          c.name as course, 
+          t.name as teacher,
+          concat(
+            'Đề thi ',
+            c.name,
+            ' Học kỳ ',
+            ssy.semester, 
+            ' Năm học ',
+            ssy.first_year,
+            ' - ',
+            ssy.second_year
+          )
+          as title
+        from 
+          exam e
+        join
+          course c on e.course_id = c.id
+        join
+          semester_school_year ssy on e.semester_school_year_id = ssy.id
+        join 
+          teacher t on e.teacher_id = t.id
+        where
+          e.deleted = false and
+          e.teacher_id = cast(coalesce(nullif(cast($1 as text),''), cast(e.teacher_id as text)) as integer); 
       `, [teacher_id]);
       return databaseResponse.rows;
     } catch (error) {
@@ -37,14 +62,36 @@ export default class ExamsRepository {
   async getDetailsById(id: number){
     try {
       const examResponse = await this.databaseService.runQuery(`
-        select e.id, e.total_score, e.time, e.exam_date, 
-        c.name as course, t.name as teacher,
-        ssy.semester, ssy.first_year, ssy.second_year
-        from exam e
-        join course c on e.course_id = c.id
-        join teacher t on e.teacher_id = t.id
-        join semester_school_year ssy on e.semester_school_year_id = ssy.id
-        where e.id = $1 and e.deleted = false;
+        select 
+          e.id,
+          e.total_score, 
+          e.time, 
+          e.exam_date, 
+          c.name as course, 
+          t.name as teacher,
+          concat(
+            'Đề thi ',
+            c.name,
+            ' Học kỳ ',
+            ssy.semester, 
+            ' Năm học ',
+            ssy.first_year,
+            ' - ',
+            ssy.second_year
+          )
+          as title
+        from 
+          exam e
+        join
+          course c on e.course_id = c.id
+        join
+          semester_school_year ssy on e.semester_school_year_id = ssy.id
+        join 
+          teacher t on e.teacher_id = t.id
+        where
+          e.deleted = false 
+          and
+          e.id = $1;
       `, [id]);
       if(examResponse.rowCount === 0){
         throw new BadRequestException(`Exam with id ${id} not found`);
