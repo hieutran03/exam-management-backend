@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateExamResultDTO } from 'src/models/grade/dtos/create-exam-result.dto';
-import { UpdateExamResultDTO } from 'src/models/grade/dtos/update-exam-result.dto';
+import { CreateExamResultDTO } from 'src/models/exams/dtos/create-exam-result.dto';
+import { UpdateExamResultDTO } from 'src/models/exams/dtos/update-exam-result.dto';
 import { ExamResultRepository } from './exam-result.repository';
-import { CreateStudentResultDTO } from 'src/models/grade/dtos/create-studtent-result.dto';
-import { UpdateStudentResultDTO } from 'src/models/grade/dtos/update-student-result.dto';
+import { CreateStudentResultDTO } from 'src/models/exams/dtos/create-studtent-result.dto';
+import { UpdateStudentResultDTO } from 'src/models/exams/dtos/update-student-result.dto';
 
 @Injectable()
 export class ExamResultService {

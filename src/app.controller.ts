@@ -9,4 +9,14 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('semesters')
+  async getSemesters() {
+    return this.appService.getSemesters();
+  }
+
+  @Get('courses')
+  async getCourses() {
+    return this.appService.getCourses();
+  }
 }

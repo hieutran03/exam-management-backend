@@ -5,8 +5,8 @@ import { RequestWithUser } from 'src/core/authentication/requestWithUsers.interf
 import { UpdateExamDTO } from 'src/models/exams/dtos/update-exam.dto';
 import { VerifyExamIdInterceptor } from './verifyExamId.interceptor';
 import { ExamResultService } from './exam-result.service';
-import { UpdateExamResultDTO } from 'src/models/grade/dtos/update-exam-result.dto';
-import { CreateExamResultDTO } from 'src/models/grade/dtos/create-exam-result.dto';
+import { UpdateExamResultDTO } from 'src/models/exams/dtos/update-exam-result.dto';
+import { CreateExamResultDTO } from 'src/models/exams/dtos/create-exam-result.dto';
 
 @UseInterceptors(VerifyExamIdInterceptor)
 @Controller('my-exams')

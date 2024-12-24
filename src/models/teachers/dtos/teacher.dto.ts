@@ -11,6 +11,8 @@ export class TeacherDTO{
   @Expose()
   role_id: number;
   @Expose()
+  role_name: string;
+  @Expose()
   @Type(() => RolePermissionDTO)
   rolePermission: RolePermissionDTO;
 }

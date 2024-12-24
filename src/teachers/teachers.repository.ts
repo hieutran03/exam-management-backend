@@ -12,7 +12,12 @@ export class TeachersRepository {
   async getAll() {
     try {
       const databaseResponse = await this.databaseService.runQuery(`
-        select * from teacher where deleted = 'false'
+        select t.id as id, t.name as name, t.username as username, t.password as password,
+        t.deleted as deleted, t.created_at as created_at, t.role_id as role_id, 
+        r.name as role_name
+        from teacher t
+        left join role r on t.role_id = r.id
+        where deleted = 'false'
       `);
       return databaseResponse.rows;
     } catch (error) {
