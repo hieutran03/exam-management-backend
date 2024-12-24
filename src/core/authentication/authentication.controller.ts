@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res, Body, UseGuards, HttpCode, Patch, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Req, Res, Body, UseGuards, HttpCode, Patch, HttpException, HttpStatus, Get } from '@nestjs/common';
 import { RequestWithUserDetails } from './requestWithUsers.interface';
 import { AuthenticationService } from './authentication.service';
 import { Response } from 'express';
@@ -15,6 +15,12 @@ export class AuthenticationController {
     private readonly authenticationService: AuthenticationService,
     private readonly userService: TeachersService
   ) {}
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('my-profile')
+  getMyProfile(@Req() request: RequestWithUserDetails){
+    return this.userService.findWithDetails(request.user.id);
+  }
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
@@ -39,4 +45,5 @@ export class AuthenticationController {
   logout(@Res({passthrough: true}) response: Response){
     response.setHeader('Set-Cookie', this.authenticationService.getCookieForLogOut());
   }
+
 }
