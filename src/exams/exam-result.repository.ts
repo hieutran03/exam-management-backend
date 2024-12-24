@@ -14,7 +14,8 @@ export class ExamResultRepository{
       const databaseResponse = await this.databaseService.runQuery(`
         select * 
         from exam_result
-        where exam_id = $1;
+        where exam_id = $1
+        order by student_id asc;
         `, [exam_id]);
       return databaseResponse.rows;
     } catch (error) {
@@ -26,7 +27,8 @@ export class ExamResultRepository{
     try {
       const databaseResponse = await this.databaseService.runQuery(`
         select * from exam_result
-        where student_id = $1;
+        where student_id = $1
+        order by exam_id asc;
         `, [student_id]);
       return databaseResponse.rows;
     } catch (error) {

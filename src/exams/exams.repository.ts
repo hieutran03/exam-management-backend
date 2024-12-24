@@ -40,7 +40,8 @@ export default class ExamsRepository {
           teacher t on e.teacher_id = t.id
         where
           e.deleted = false and
-          e.teacher_id = cast(coalesce(nullif(cast($1 as text),''), cast(e.teacher_id as text)) as integer); 
+          e.teacher_id = cast(coalesce(nullif(cast($1 as text),''), cast(e.teacher_id as text)) as integer)
+        order by e.id asc;  
       `, [teacher_id]);
       return databaseResponse.rows;
     } catch (error) {

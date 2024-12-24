@@ -64,48 +64,22 @@ export class TeachersRepository {
 
   async getWithDetails(id: number, client?: PoolClient) {
     try {
-      if(client) {
-        const userWithRoles = await client.query(
-          `
-          select t.id as id, t.name as name, t.username as username, t.created_at as created_at,
-          t.password as password, t.deleted as deleted, t.role_id as role_id,
-          r.name as role_name
-          from teacher t
-          join role r on t.role_id = r.id
-          where t.id=$1
-          `,
-          [id],
-        );
-        if(userWithRoles.rows.length === 0) {
-          return this.getById(id);
-        }
-        const permissinonResponse = await client.query(
-          `
-          select array_to_json(array(
-            select permission
-            from permission_based
-            where role_id = $1
-          )) as permissions
-          `,
-          [userWithRoles.rows[0].role_id],
-        );
-        const result = {
-          ...userWithRoles.rows[0],
-          permissions: permissinonResponse.rows[0].permissions,
-        }
-        return  new TeachersWithDetailsModel(result);
-      }
-      const userWithRoles = await this.databaseService.runQuery(
-        `
+      const query = `
         select t.id as id, t.name as name, t.username as username, t.created_at as created_at,
         t.password as password, t.deleted as deleted, t.role_id as role_id,
         r.name as role_name
         from teacher t
         join role r on t.role_id = r.id
         where t.id=$1
-        `,
-        [id],
-      );
+      `
+      let userWithRoles;
+      if(client) {
+        userWithRoles = await client.query(query, [id]);
+      }
+      else{
+        userWithRoles = await this.databaseService.runQuery(query, [id]);
+      }
+        
       if(userWithRoles.rows.length === 0) {
         return this.getById(id);
       }
