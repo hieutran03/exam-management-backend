@@ -12,7 +12,7 @@ export default class MyQuestionsController {
   @Get()
   async getMyQuestions(@Req() request: RequestWithUser) {
     const teacher_id = request.user.id;
-    return await this.questionService.findWithDetails(teacher_id).catch((error) => {
+    return await this.questionService.findAll(teacher_id).catch((error) => {
       throw error;
     });
   }
@@ -30,7 +30,6 @@ export default class MyQuestionsController {
   @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
   updateMyQuestion(@Param('id', ParseIntPipe) id: number, @Body() data: CreateQuestionDTO, @Req() request: RequestWithUser) {
-    const teacher_id = request.user.id;
     return this.questionService.update(id, data).catch((error) => {
       throw error;
     });
@@ -40,7 +39,6 @@ export default class MyQuestionsController {
   @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
   deleteMyQuestion(@Param('id', ParseIntPipe) id: number, @Req() request: RequestWithUser) {
-    const teacher_id = request.user.id;
     return this.questionService.delete(id).catch((error) => {
       throw error;
     });

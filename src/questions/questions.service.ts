@@ -7,9 +7,9 @@ import { IGetByIdMethod } from 'src/common/interface/getByIdMethod.interface';
 @Injectable()
 export class QuestionsService implements IGetByIdMethod{
   constructor(private questionRepository: QuestionsRepository) {}
-  findAll(){
+  findAll(teacher_id?: number){
     try {
-      return this.questionRepository.findAllWithDetals();
+      return this.questionRepository.findAllWithDetals(teacher_id);
     } catch (error) {
       throw error; 
     }
