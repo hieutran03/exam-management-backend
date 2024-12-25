@@ -65,7 +65,9 @@ export class MyExamController{
     @Param('id')id: number,
     @Body()data: CreateExamResultDTO[]
   ){
-    return await this.examResultService.createMany(id, data);
+    return await this.examResultService.createMany(id, data).catch((error) => {
+      throw error;
+    });
   }
 
   // @UseGuards(JwtAuthenticationGuard)

@@ -1,5 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { PoolClient } from "pg";
 import DatabaseService from "src/core/database/database.service";
+import PostgresErrorCode from "src/core/database/postgresErrorCode.enum";
 import { CreateExamResultDTO } from "src/models/exams/dtos/create-exam-result.dto";
 import { CreateStudentResultDTO } from "src/models/exams/dtos/create-studtent-result.dto";
 import { UpdateExamResultDTO } from "src/models/exams/dtos/update-exam-result.dto";
@@ -51,18 +53,15 @@ export class ExamResultRepository{
     }
   }
   
-  async create(exam_id: number, student_id: number ,data: CreateStudentResultDTO){
-    const client = await this.databaseService.getPoolClient();
+  async create(exam_id: number, student_id: number ,data: CreateStudentResultDTO, client: PoolClient){
     try {
-      await client.query('begin');
       const databaseResponse = await client.query(`
         insert into exam_result(exam_id, student_id, student_name, score, score_text, note)
         values($1, $2, $3, $4, $5, $6) returning *;
         `, [exam_id, student_id, data.student_name, data.score, data.score_text, data.note]);
-      await client.query('commit');
       return databaseResponse.rows[0];
     } catch (error) {
-      await client.query('rollback');
+      throw error;
     }
   }
  
@@ -70,32 +69,32 @@ export class ExamResultRepository{
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');
-      data.map(async (item) => {
-        await client.query(`
-          insert into exam_result(exam_id, student_id, student_name, score, score_text, note)
-          values($1, $2, $3, $4, $5, $6) returning *;
-          `, [exam_id, item.student_id, item.student_name, item.score, item.score_text, item.note]);
-      });
+      await Promise.all(
+        data.map((item) => 
+          this.create(exam_id, item.student_id, item, client)
+        )
+      );
       await client.query('commit');
     } catch (error) {
       await client.query('rollback');
+      if(error.code === PostgresErrorCode.UniqueViolation){
+        throw new BadRequestException('Create failed');
+      }
+      throw error;
     }
   }
 
-  async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO){
-    const client = await this.databaseService.getPoolClient();
+  async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO, client: PoolClient){
     try {
-      await client.query('begin');
       const databaseResponse = await client.query(`
         update exam_result set
         student_name = $1, score = $2, score_text = $3, note = $4
         where exam_id = $5 and student_id = $6 returning *;
       `, [data.student_name, data.score, data.score_text, data.note, exam_id, student_id]
       );
-      await client.query('commit');
       return databaseResponse.rows[0];
     } catch (error) {
-      await client.query('rollback');
+      throw error;
     }
   }
 
@@ -103,17 +102,18 @@ export class ExamResultRepository{
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');
-      data.map(async (item) => {
-        await client.query(`
-          update exam_result set
-          student_name = $1, score = $2, score_text = $3, note = $4
-          where exam_id = $5 and student_id = $6 returning *;
-        `, [item.student_name, item.score, item.score_text, item.note, exam_id, item.student_id]
-        );
-      });
+      await Promise.all(
+        data.map((item) => 
+          this.update(exam_id, item.student_id, item, client)
+        )
+      );
       await client.query('commit');
     } catch (error) {
       await client.query('rollback');
+      if(error.code === PostgresErrorCode.UniqueViolation){
+        throw new BadRequestException('Duplicate student_id');
+      }
+      throw error;
     }
   }
   async deleteByExamIdAndStudentId(exam_id: number, student_id: number){
@@ -127,6 +127,7 @@ export class ExamResultRepository{
       return databaseResponse.rows[0];
     } catch (error) {
       await client.query('rollback');
+      throw error;
     }
   }
 }

@@ -149,7 +149,7 @@ export default class ExamsRepository {
         if(PostgresErrorCode.ForeignKeyViolation === error.code){
           throw new BadRequestException('question_id or course_id or semester_school_year_id not found');
         }
-        throw error;
+        throw new error;
       } finally {
         client.release();
       }

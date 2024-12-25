@@ -27,11 +27,11 @@ export class ExamResultService {
     });
   }
 
-  async create(exam_id: number, student_id: number,data: CreateStudentResultDTO) {
-    return await this.examResultRepository.create(exam_id, student_id, data).catch((error) => {
-      throw error;
-    });
-  }
+  // async create(exam_id: number, student_id: number,data: CreateStudentResultDTO) {
+  //   return await this.examResultRepository.create(exam_id, student_id, data).catch((error) => {
+  //     throw error;
+  //   });
+  // }
 
   async createMany(exam_id: number, data: CreateExamResultDTO[]) {
     return await this.examResultRepository.createMany(exam_id, data).catch((error) => {
@@ -39,11 +39,11 @@ export class ExamResultService {
     });
   }
 
-  async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO) {
-    return await this.examResultRepository.update(exam_id, student_id,data).catch((error) => {
-      throw error;
-    });
-  }
+  // async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO) {
+  //   return await this.examResultRepository.update(exam_id, student_id,data).catch((error) => {
+  //     throw error;
+  //   });
+  // }
 
   async updateMany(exam_id, data: UpdateExamResultDTO[]) {
     return await this.examResultRepository.updateMany(exam_id, data).catch((error) => {

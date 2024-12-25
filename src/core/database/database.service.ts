@@ -44,17 +44,23 @@ class DatabaseService {
 
   async getPoolClient() {
     const poolClient = await this.pool.connect();
+    // const proxyClient = new Proxy(poolClient, {
+    //   get: (target: PoolClient, propertyName: keyof PoolClient) => {
+    //     if (propertyName === 'query') {
+    //       try {
+    //         return async(query: string, params?: unknown[]) => {
+    //           return await this.queryWithLogging(target, query, params);
+    //         };
+    //       } catch (error) {
+    //         throw error;
+    //       } 
+    //     }
+    //     return target[propertyName];
+    //   },
+    // });
 
-    return new Proxy(poolClient, {
-      get: (target: PoolClient, propertyName: keyof PoolClient) => {
-        if (propertyName === 'query') {
-          return (query: string, params?: unknown[]) => {
-            return this.queryWithLogging(target, query, params);
-          };
-        }
-        return target[propertyName];
-      },
-    });
+    // return proxyClient;
+    return poolClient;
   }
 }
 
