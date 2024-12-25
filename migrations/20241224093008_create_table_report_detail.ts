@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
       teacher_id int not null,
       semester_school_year_id int not null,
       course_id int not null,
+      title varchar(255),
       number_of_exam int not null,
       number_of_exam_result int not null,
       percentage_of_exam float not null,
