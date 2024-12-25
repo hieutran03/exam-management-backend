@@ -1,6 +1,5 @@
-import { Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Put } from "@nestjs/common";
 import { ParameterService } from "./parameter.service";
-import { error } from "console";
 
 @Controller('parameter')
 export class ParameterController {
@@ -13,9 +12,16 @@ export class ParameterController {
     });
   }
 
-  @Post(':id')
-  async getParameterById(id: number) {
-    return await this.parameterService.getById(id).catch((error) => {
+  // @Get(':id')
+  // async getParameterById(id: number) {
+  //   return await this.parameterService.getById(id).catch((error) => {
+  //     throw error;
+  //   });
+  // }
+
+  @Put(':id')
+  async updateParameterById(@Param('id')id: number, @Body('value')value: number) {
+    return await this.parameterService.update(id, value).catch((error) => {
       throw error;
     });
   }

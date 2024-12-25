@@ -23,13 +23,13 @@ export class ParameterService {
     });
   }
 
-  async update(id: number, value: string) {
+  async update(id: number, value: number) {
     return await this.parameterRepository.update(id, value).catch((error) => {
       throw error;
     });
   }
 
-  async updateByName(name: string, value: string) {
+  async updateByName(name: string, value: number) {
     return await this.parameterRepository.updateByName(name, value).catch((error) => {
       throw error;
     });

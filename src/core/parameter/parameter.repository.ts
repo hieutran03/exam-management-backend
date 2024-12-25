@@ -40,7 +40,7 @@ export default class ParameterRepository{
     }
   }
 
-  async update(id: number, value: string){
+  async update(id: number, value: number){
     try {
       const databaseResponse = await this.databaseService.runQuery(`
         update parameter
@@ -54,7 +54,7 @@ export default class ParameterRepository{
     }
   }
 
-  async updateByName(name: string, value: string){
+  async updateByName(name: string, value: number){
     try {
       const databaseResponse = await this.databaseService.runQuery(`
         update parameter
