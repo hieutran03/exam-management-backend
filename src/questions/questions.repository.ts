@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import DatabaseService from "src/core/database/database.service";
+import { GetExamDto } from "src/models/exams/dtos/get-exam.dto";
 import CreateQuestionDTO from "src/models/questions/dtos/create-question.dto";
 import UpdateQuestionDTO from "src/models/questions/dtos/update-question.dto";
 
@@ -19,7 +20,7 @@ export default class QuestionsRepository {
   //   return databaseResponse.rows;
   // }
 
-  async findAllWithDetals(teacher_id?: number) {
+  async findAllWithDetals(data: GetExamDto) {
     const databaseResponse = await this.databaseService.runQuery(`
       select q.id, q.content, c.name as course_name, 
       ql.name as question_level_name, t.name as teacher_name
@@ -29,8 +30,9 @@ export default class QuestionsRepository {
       join teacher t on t.id = q.teacher_id
       where 
         q.teacher_id =  cast(coalesce(nullif(cast($1 as text), ''), cast (q.teacher_id as text)) as integer)
+        and q.course_id = cast(coalesce(nullif(cast($2 as text), ''), cast (q.course_id as text)) as integer)
         and q.deleted = false
-    `, [teacher_id]);
+    `, [data.teacher_id, data.course_id]);
     return databaseResponse.rows;
   }
 
@@ -52,6 +54,14 @@ export default class QuestionsRepository {
       where id = $1 and deleted = false
     `, [id]);
     return databaseResponse.rows[0];
+  }
+
+  async findByCourseId(course_id: number) {
+    const databaseResponse = await this.databaseService.runQuery(`
+      select * from question 
+      where course_id = $1 and deleted = false
+    `, [course_id]);
+    return databaseResponse.rows;
   }
 
   async create(teacher_id: number ,questionData: CreateQuestionDTO) {

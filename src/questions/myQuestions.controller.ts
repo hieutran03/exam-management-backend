@@ -9,10 +9,11 @@ import { VerifyQuestionIdInterceptor } from './verifyQuestionId.interceptor';
 export default class MyQuestionsController {
   constructor(private questionService: QuestionsService) {}
   @UseGuards(JwtAuthenticationGuard)
-  @Get()
+  @Get('')
   async getMyQuestions(@Req() request: RequestWithUser) {
     const teacher_id = request.user.id;
-    return await this.questionService.findAll(teacher_id).catch((error) => {
+    const course_id = request.query.course_id ? parseInt(request.query.course_id as string) : null;
+    return await this.questionService.findAll({teacher_id, course_id}).catch((error) => {
       throw error;
     });
   }

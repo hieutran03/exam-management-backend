@@ -14,8 +14,10 @@ export class QuestionsController {
 
   @UseGuards(PermissionGuard(PermissionEnum.QUESTION_READ))
   @Get()
-  async getAllQuestions() {
-    return await this.questionService.findAll().catch((error) => {
+  async getAllQuestions(@Req() request: RequestWithUser) {
+    const teacher_id = request.query.teacher_id ? parseInt(request.query.teacher_id as string) : null;
+    const course_id = request.query.course_id ? parseInt(request.query.course_id as string) : null;
+    return await this.questionService.findAll({teacher_id,course_id}).catch((error) => {
       throw error;
     });
   }
