@@ -11,8 +11,8 @@ export async function up(knex: Knex): Promise<void> {
     insert into parameter(name, value) values ('max_exam_question', 5);
     insert into parameter(name, value) values ('max_exam_time', 180);
     insert into parameter(name, value) values ('min_exam_time', 30);
-    insert into parameter(name, value) values ('max_exam_score', 0);
-    insert into parameter(name, value) values ('min_exam_score', 10);
+    insert into parameter(name, value) values ('max_exam_score', 10);
+    insert into parameter(name, value) values ('min_exam_score', 0);
   `)
 }
 
