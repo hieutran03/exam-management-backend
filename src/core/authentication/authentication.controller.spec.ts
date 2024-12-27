@@ -2,75 +2,81 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
 import { TeachersService } from '../../../src/teachers/teachers.service';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import JwtAuthenticationGuard  from './jwtAuthentication.guard';
+import { LocalAuthenticationGuard } from './localAuthentication.guard';
+import { ChangePasswordDTO } from '../../../src/models/teachers/dtos/change-password.dto';
 import { Response } from 'express';
-import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('AuthenticationController', () => {
   let controller: AuthenticationController;
-  let authenticationService: AuthenticationService;
-  let teachersService: TeachersService;
+  let authenticationService: Partial<AuthenticationService>;
+  let userService: Partial<TeachersService>;
 
   beforeEach(async () => {
+    authenticationService = {
+      getCookieWithJwtToken: jest.fn().mockReturnValue('auth_token_cookie'),
+      getCookieForLogOut: jest.fn().mockReturnValue('logout_cookie'),
+    };
+
+    userService = {
+      findWithDetails: jest.fn().mockResolvedValue({ id: 1, name: 'John Doe' }),
+      updatePassword: jest.fn().mockResolvedValue({ success: true }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthenticationController],
       providers: [
-        {
-          provide: AuthenticationService,
-          useValue: {
-            getCookieWithJwtToken: jest.fn(),
-            getAuthenticatedUser: jest.fn(),
-          },
-        },
-        {
-          provide: TeachersService,
-          useValue: {
-            findWithDetails: jest.fn(),
-          },
-        },
+        { provide: AuthenticationService, useValue: authenticationService },
+        { provide: TeachersService, useValue: userService },
       ],
     }).compile();
 
     controller = module.get<AuthenticationController>(AuthenticationController);
-    authenticationService = module.get<AuthenticationService>(AuthenticationService);
-    teachersService = module.get<TeachersService>(TeachersService);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  describe('getMyProfile', () => {
+    it('should return user details', async () => {
+      const mockRequest = { user: { id: 1 } } as any;
+      const result = await controller.getMyProfile(mockRequest);
+      expect(userService.findWithDetails).toHaveBeenCalledWith(1);
+      expect(result).toEqual({ id: 1, name: 'John Doe' });
+    });
   });
 
   describe('login', () => {
-    it('should login successfully and set JWT cookie', async () => {
-      const mockRequest = { user: { id: 1, username: 'testUser' } } as any;
+    it('should set a cookie and return user', () => {
+      const mockRequest = { user: { id: 1, name: 'John Doe' } } as any;
       const mockResponse = { setHeader: jest.fn() } as unknown as Response;
 
-      jest.spyOn(authenticationService, 'getCookieWithJwtToken').mockReturnValue('jwt-token');
-
-      const result = await controller.login(mockRequest, mockResponse);
-
-      expect(result).toEqual(mockRequest.user);
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Set-Cookie', 'jwt-token');
+      const result = controller.login(mockRequest, mockResponse);
+      expect(authenticationService.getCookieWithJwtToken).toHaveBeenCalledWith(1);
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('Set-Cookie', 'auth_token_cookie');
+      expect(result).toEqual({ id: 1, name: 'John Doe' });
     });
-
- 
-
-  
   });
 
-
-
- 
-
-    it('should throw an error if TeachersService fails', async () => {
+  describe('changePassword', () => {
+    it('should update the user password', async () => {
       const mockRequest = { user: { id: 1 } } as any;
+      const mockBody: ChangePasswordDTO = { password: 'newPassword123' };
 
-      jest.spyOn(teachersService, 'findWithDetails').mockImplementation(() => { 
-        throw Error('Unexpected error');
-      });
-
-      await expect(controller.getMyProfile(mockRequest)).rejects.toThrow('Unexpected error');
+      const result = await controller.changePassword(mockRequest, mockBody);
+      expect(userService.updatePassword).toHaveBeenCalledWith(1, 'newPassword123');
+      expect(result).toEqual({ success: true });
     });
   });
 
-afterEach(() => {
-  jest.clearAllMocks();
-  jest.clearAllTimers();
+  describe('logout', () => {
+    it('should set a cookie to log out', () => {
+      const mockResponse = { setHeader: jest.fn() } as unknown as Response;
+
+      controller.logout(mockResponse);
+      expect(authenticationService.getCookieForLogOut).toHaveBeenCalled();
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('Set-Cookie', 'logout_cookie');
+    });
+  });
 });
