@@ -15,8 +15,8 @@ export class AppController {
     return this.appService.getSemesters();
   }
 
-  @Get('courses')
-  async getCourses() {
-    return this.appService.getCourses();
-  }
+  // @Get('courses')
+  // async getCourses() {
+  //   return this.appService.getCourses();
+  // }
 }

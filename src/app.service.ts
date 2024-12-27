@@ -15,10 +15,10 @@ export class AppService {
     return databaseResponse.rows;
   }
 
-  async getCourses() {
-    const databaseResponse = await this.databaseService.runQuery(`
-      select * from course
-    `);
-    return databaseResponse.rows;
-  }
+  // async getCourses() {
+  //   const databaseResponse = await this.databaseService.runQuery(`
+  //     select * from course
+  //   `);
+  //   return databaseResponse.rows;
+  // }
 }
