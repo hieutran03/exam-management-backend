@@ -1,13 +1,13 @@
 import { Controller, Get, Patch, Param, Body, ParseIntPipe, UseGuards, Post, Delete} from '@nestjs/common';
 import { TeachersService } from './teachers.service';
-import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
-import { Serialize } from 'src/common/interceptors/serialize.interceptor';
-import { TeacherDTO } from 'src/models/teachers/dtos/teacher.dto';
-import PermissionGuard from 'src/core/roles/permission.guard';
-import PermissionEnum from 'src/core/roles/permission.enum';
-import { AuthenticationService } from 'src/core/authentication/authentication.service';
-import RegisterDto from 'src/models/authentication/dtos/register.dto';
-import { UpdateTeacherDTO } from 'src/models/teachers/dtos/update-teacher.dto';
+import { ChangePasswordDTO } from '../../src/models/teachers/dtos/change-password.dto';
+import { Serialize } from '../../src/common/interceptors/serialize.interceptor';
+import { TeacherDTO } from '../../src/models/teachers/dtos/teacher.dto';
+import PermissionGuard from '../../src/core/roles/permission.guard';
+import PermissionEnum from '../../src/core/roles/permission.enum';
+import { AuthenticationService } from '../../src/core/authentication/authentication.service';
+import RegisterDto from '../../src/models/authentication/dtos/register.dto';
+import { UpdateTeacherDTO } from '../../src/models/teachers/dtos/update-teacher.dto';
 
 @Serialize(TeacherDTO)
 @Controller('teachers')

@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PoolClient } from "pg";
-import DatabaseService from "src/core/database/database.service";
-import PostgresErrorCode from "src/core/database/postgresErrorCode.enum";
-import CreateExamDTO from "src/models/exams/dtos/create-exam.dto";
-import { UpdateExamDTO } from "src/models/exams/dtos/update-exam.dto";
-import getDifferenceBetweenArrays from "src/common/utils/getDifferentBetweenArrays.util";
+import DatabaseService from "../../src/core/database/database.service";
+import PostgresErrorCode from "../../src/core/database/postgresErrorCode.enum";
+import CreateExamDTO from "../../src/models/exams/dtos/create-exam.dto";
+import { UpdateExamDTO } from "../../src/models/exams/dtos/update-exam.dto";
+import getDifferenceBetweenArrays from "../../src/common/utils/getDifferentBetweenArrays.util";
 
 @Injectable()
 export default class ExamsRepository {

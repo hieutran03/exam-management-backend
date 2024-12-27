@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ExamsService } from './exams.service';
-import CreateExamDTO from 'src/models/exams/dtos/create-exam.dto';
-import JwtAuthenticationGuard from 'src/core/authentication/jwtAuthentication.guard';
-import { RequestWithUser } from 'src/core/authentication/requestWithUsers.interface';
-import PermissionGuard from 'src/core/roles/permission.guard';
-import PermissionEnum from 'src/core/roles/permission.enum';
-import { UpdateExamDTO } from 'src/models/exams/dtos/update-exam.dto';
+import CreateExamDTO from '../../src/models/exams/dtos/create-exam.dto';
+import JwtAuthenticationGuard from '../../src/core/authentication/jwtAuthentication.guard';
+import { RequestWithUser } from '../../src/core/authentication/requestWithUsers.interface';
+import PermissionGuard from '../../src/core/roles/permission.guard';
+import PermissionEnum from '../../src/core/roles/permission.enum';
+import { UpdateExamDTO } from '../../src/models/exams/dtos/update-exam.dto';
 
 @Controller('exams')
 export class ExamsController {

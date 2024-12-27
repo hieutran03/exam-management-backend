@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards, UseInterceptors } from '@nestjs/common';
-import CreateQuestionDTO from 'src/models/questions/dtos/create-question.dto';
-import JwtAuthenticationGuard from 'src/core/authentication/jwtAuthentication.guard';
-import { RequestWithUser } from 'src/core/authentication/requestWithUsers.interface';
+import CreateQuestionDTO from '../../src/models/questions/dtos/create-question.dto';
+import JwtAuthenticationGuard from '../../src/core/authentication/jwtAuthentication.guard';
+import { RequestWithUser } from '../../src/core/authentication/requestWithUsers.interface';
 import { QuestionsService } from './questions.service';
 import { VerifyQuestionIdInterceptor } from './verifyQuestionId.interceptor';
 

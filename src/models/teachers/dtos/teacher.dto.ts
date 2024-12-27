@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer";
-import { RolePermissionDTO } from "src/models/role/dtos/rolePermission.dto";
+import { RolePermissionDTO } from "../../role/dtos/rolePermission.dto";
 
 export class TeacherDTO{
   @Expose()

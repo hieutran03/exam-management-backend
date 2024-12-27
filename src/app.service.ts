@@ -9,16 +9,12 @@ export class AppService {
   }
 
   async getSemesters() {
-    const databaseResponse = await this.databaseService.runQuery(`
-      select * from semester_school_year
-    `);
+    const databaseResponse = await this.databaseService.runQuery(`select * from semester_school_year`);
     return databaseResponse.rows;
   }
 
   async getCourses() {
-    const databaseResponse = await this.databaseService.runQuery(`
-      select * from course
-    `);
+    const databaseResponse = await this.databaseService.runQuery(`select * from course`);
     return databaseResponse.rows;
   }
 }

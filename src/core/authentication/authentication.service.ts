@@ -1,5 +1,5 @@
 import { Injectable,  HttpException, HttpStatus  } from '@nestjs/common';
-import { TeachersService } from 'src/teachers/teachers.service';
+import { TeachersService } from '../../teachers/teachers.service';
 import { RegisterDto } from '../../models/authentication/dtos/register.dto';
 import * as bcrypt from 'bcrypt';
 import PostgresErrorCode from 'src/core/database/postgresErrorCode.enum';

@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ReportService } from './report.service';
-import PermissionGuard from 'src/core/roles/permission.guard';
-import PermissionEnum from 'src/core/roles/permission.enum';
-import { RequestWithUser } from 'src/core/authentication/requestWithUsers.interface';
-import JwtAuthenticationGuard from 'src/core/authentication/jwtAuthentication.guard';
+import PermissionGuard from '../../src/core/roles/permission.guard';
+import PermissionEnum from '../../src/core/roles/permission.enum';
+import { RequestWithUser } from '../../src/core/authentication/requestWithUsers.interface';
+import JwtAuthenticationGuard from '../../src/core/authentication/jwtAuthentication.guard';
 
 @Controller('report')
 export class ReportController {

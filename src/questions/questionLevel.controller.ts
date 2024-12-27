@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
-import PermissionGuard from 'src/core/roles/permission.guard';
-import PermissionEnum from 'src/core/roles/permission.enum';
+import PermissionGuard from '../../src/core/roles/permission.guard';
+import PermissionEnum from '../../src/core/roles/permission.enum';
 import { QuestionLevelService } from './questionLevel.service';
 
 @Controller('question-levels')

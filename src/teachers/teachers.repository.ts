@@ -2,8 +2,8 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import DatabaseService from '../core/database/database.service';
 import { TeacherModel } from '../models/teachers/teachers.model';
 import RegisterDto from 'src/models/authentication/dtos/register.dto';
-import { TeachersWithDetailsModel } from 'src/models/teachers/teachersWithDetails.model';
-import PostgresErrorCode from 'src/core/database/postgresErrorCode.enum';
+import { TeachersWithDetailsModel } from '../models/teachers/teachersWithDetails.model';
+import PostgresErrorCode from '../core/database/postgresErrorCode.enum';
 import { PoolClient } from 'pg';
 
 @Injectable()

@@ -3,11 +3,11 @@ import { RequestWithUserDetails } from './requestWithUsers.interface';
 import { AuthenticationService } from './authentication.service';
 import { Response } from 'express';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
-import { ChangePasswordDTO } from 'src/models/teachers/dtos/change-password.dto';
-import { TeachersService } from 'src/teachers/teachers.service';
+import { ChangePasswordDTO } from '../../../src/models/teachers/dtos/change-password.dto';
+import { TeachersService } from '../../../src/teachers/teachers.service';
 import JwtAuthenticationGuard from './jwtAuthentication.guard';
-import { Serialize } from 'src/common/interceptors/serialize.interceptor';
-import { TeacherDTO } from 'src/models/teachers/dtos/teacher.dto';
+import { Serialize } from '../../../src/common/interceptors/serialize.interceptor';
+import { TeacherDTO } from '../../../src/models/teachers/dtos/teacher.dto';
 @Serialize(TeacherDTO)
 @Controller('auth')
 export class AuthenticationController {

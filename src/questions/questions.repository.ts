@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import DatabaseService from "src/core/database/database.service";
+import DatabaseService from "../../src/core/database/database.service";
 import { GetExamDto } from "src/models/exams/dtos/get-exam.dto";
-import CreateQuestionDTO from "src/models/questions/dtos/create-question.dto";
-import UpdateQuestionDTO from "src/models/questions/dtos/update-question.dto";
+import CreateQuestionDTO from "../../src/models/questions/dtos/create-question.dto";
+import UpdateQuestionDTO from "../../src/models/questions/dtos/update-question.dto";
 
 @Injectable()
 export default class QuestionsRepository {

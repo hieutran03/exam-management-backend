@@ -1,13 +1,13 @@
-import { RoleWithPermissionBasedModel } from "src/models/role/roleWithPermissionBased.model";
+import { RoleWithPermissionBasedModel } from "../../../src/models/role/roleWithPermissionBased.model";
 import DatabaseService from "../database/database.service";
 import PermissionEnum from "./permission.enum";
 import { Injectable, NotFoundException, Post } from "@nestjs/common";
-import { RoleModel } from "src/models/role/role.model";
-import { UpdateRoleDTO } from "src/models/role/dtos/update-role.dto";
+import { RoleModel } from "../../../src/models/role/role.model";
+import { UpdateRoleDTO } from "../../../src/models/role/dtos/update-role.dto";
 import { PoolClient } from "pg";
-import getDifferenceBetweenArrays from "src/common/utils/getDifferentBetweenArrays.util";
+import getDifferenceBetweenArrays from "../../../src/common/utils/getDifferentBetweenArrays.util";
 import PostgresErrorCode from "../database/postgresErrorCode.enum";
-import { CreateRoleDTO } from "src/models/role/dtos/create-role.dto";
+import { CreateRoleDTO } from "../../../src/models/role/dtos/create-role.dto";
 
 @Injectable()
 export default class RolesRepository {

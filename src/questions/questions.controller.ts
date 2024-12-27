@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
-import CreateQuestionDTO from 'src/models/questions/dtos/create-question.dto';
-import JwtAuthenticationGuard from 'src/core/authentication/jwtAuthentication.guard';
-import { RequestWithUser } from 'src/core/authentication/requestWithUsers.interface';
-import PermissionGuard from 'src/core/roles/permission.guard';
-import PermissionEnum from 'src/core/roles/permission.enum';
+import CreateQuestionDTO from '../../src/models/questions/dtos/create-question.dto';
+import JwtAuthenticationGuard from '../../src/core/authentication/jwtAuthentication.guard';
+import { RequestWithUser } from '../../src/core/authentication/requestWithUsers.interface';
+import PermissionGuard from '../../src/core/roles/permission.guard';
+import PermissionEnum from '../../src/core/roles/permission.enum';
 
 @Controller('questions')
 export class QuestionsController {
