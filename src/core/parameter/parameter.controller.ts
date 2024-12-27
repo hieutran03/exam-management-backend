@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Param, Put } from "@nestjs/common";
+import { Body, Controller, Get, Param, Put, UseGuards } from "@nestjs/common";
 import { ParameterService } from "./parameter.service";
+import PermissionGuard from "../roles/permission.guard";
+import PermissionEnum from "../roles/permission.enum";
 
 @Controller('parameter')
 export class ParameterController {
@@ -19,6 +21,7 @@ export class ParameterController {
   //   });
   // }
 
+  @UseGuards(PermissionGuard(PermissionEnum.TEACHER_MODIFY))
   @Put(':id')
   async updateParameterById(@Param('id')id: number, @Body('value')value: number) {
     return await this.parameterService.update(id, value).catch((error) => {
