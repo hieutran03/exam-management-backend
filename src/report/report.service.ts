@@ -5,8 +5,8 @@ import { ReportRepository } from './report.repository';
 export class ReportService {
   constructor(private reportRepository: ReportRepository) {}
 
-  getAll() {
-    return this.reportRepository.getAll();
+  getAll(teacher_id?: number) {
+    return this.reportRepository.getAll(teacher_id);
   }
 
   getAllByTeacher(teacher_id: number) {

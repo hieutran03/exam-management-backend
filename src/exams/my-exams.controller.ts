@@ -70,18 +70,8 @@ export class MyExamController{
     });
   }
 
-  // @UseGuards(JwtAuthenticationGuard)
-  // @Post('/:id/results/:studentId')
-  // async createStudentResult(
-  //   @Param('id')id: number,
-  //   @Param('studentId')student_id: number,
-  //   @Body()data: CreateExamResultDTO
-  // ){
-  //   return await this.examResultService.create(id, student_id, data);
-  // }
-
   @UseGuards(JwtAuthenticationGuard)
-  @Put(':id/results/')
+  @Put(':id/results')
   async updateExamResults(
     @Param('id')id: number,
     @Body()data: UpdateExamResultDTO[]
@@ -89,15 +79,6 @@ export class MyExamController{
     return await this.examResultService.updateMany(id, data);
   }
 
-  // @UseGuards(JwtAuthenticationGuard)
-  // @Put(':id/results/:studentId')
-  // async updateStudentResult(
-  //   @Param('id')id: number,
-  //   @Param('studentId')student_id: number,
-  //   @Body()data: UpdateExamResultDTO
-  // ){
-  //   return await this.examResultService.update(id, student_id, data);
-  // } 
 
   @UseGuards(JwtAuthenticationGuard)
   @Delete(':id/results/:studentId')

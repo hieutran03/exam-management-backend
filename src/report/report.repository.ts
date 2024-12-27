@@ -5,7 +5,7 @@ import DatabaseService from "src/core/database/database.service";
 export class ReportRepository {
   constructor(private readonly databaseService: DatabaseService) {}
   
-  async getAll() {
+  async getAll(teacher_id?: number) {
     try {
       const databaseResponse = await this.databaseService.runQuery(`
           select
@@ -15,8 +15,9 @@ export class ReportRepository {
             t.name as teacher_name
           from report r
           join teacher t on r.teacher_id = t.id
+          where r.teacher_id = cast(coalesce(nullif(cast($1 as text), ''), cast (r.teacher_id as text)) as integer)
           order by r.title
-        `);
+        `, [teacher_id]);
       return databaseResponse.rows;
     } catch (error) {
       throw new Error(error);
@@ -77,14 +78,16 @@ export class ReportRepository {
   async create(ssy_id: number, teacher_id: number) {
     const client = await this.databaseService.getPoolClient();
     try {
-      client.query('BEGIN');
+      client.query('begin');
       const reportResponse = await client.query(
         `
           call insert_into_report($1, $2, 0, 0)
         `, [ssy_id, teacher_id]
       );
+      client.query('commit');
       return reportResponse.rows[0];
     } catch (error) {
+      await client.query('rollback');
       throw error;
     } finally {
       client.release();

@@ -77,7 +77,8 @@ export async function up(knex: Knex): Promise<void> {
 
       -- cập nhật tổng số liệu thống kê vào bảng report
       update report
-      set total_of_exam = total_exams,
+      set 
+        total_of_exam = total_exams,
         total_of_exam_result = total_exam_results,
         title = concat(
           'Báo cáo thống kê số lượng đề và bài chấm Học kỳ ',
@@ -87,15 +88,15 @@ export async function up(knex: Knex): Promise<void> {
           '-',
           ssy.second_year
         )
-      from report r
-      join semester_school_year ssy on r.semester_school_year_id = ssy.id  
-      where r.teacher_id = new.teacher_id
-        and r.semester_school_year_id = new.semester_school_year_id;
+      from semester_school_year ssy
+      where report.semester_school_year_id = ssy.id
+        and report.teacher_id = new.teacher_id
+        and report.semester_school_year_id = new.semester_school_year_id;
 
       return new;
     end;
     $$ language plpgsql;
-  `);
+    `);
 }
 
 
