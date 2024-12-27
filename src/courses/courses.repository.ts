@@ -55,13 +55,31 @@ export class CoursesRepository{
     }   
   }
 
-  async getAllCourseClass(courseId: number){
+  async getAllCourseClass(courseId: number, options?: any){
     const databaseResponse = await this.databaseService.runQuery(`
-      select * from course_class where course_id = $1
-    `, [courseId]);
+      select cc.*, t.name as teacher_name, 
+      concat('học kỳ ', ssy.semester, ' năm học ', ssy.first_year, '-', ssy.second_year) as semester_school_year
+      from course_class cc
+      join teacher t on cc.teacher_id = t.id
+      join semester_school_year ssy on cc.semester_school_year_id = ssy.id
+      where course_id = $1
+      and semester_school_year_id = cast(coalesce(nullif(cast($2 as text),''), cast(semester_school_year_id as text)) as integer) 
+      and teacher_id = cast(coalesce(nullif(cast($3 as text),''), cast(teacher_id as text)) as integer)
+    `, [courseId, options?.ssy_id, options?.teacher_id]);
     return databaseResponse.rows
     
   }
+
+  // async getAllCourseClassWithOptions(courseId: number, options: any){
+  //   const databaseResponse = await this.databaseService.runQuery(`
+  //     select * from course_class
+  //     where course_id = $1 
+  //     and semester_school_year_id = cast(coalesce(nullif(cast($2 as text),''), cast(semester_school_year_id as text)) as integer) 
+  //     and teacher_id = cast(coalesce(nullif(cast($3 as text),''), cast(teacher_id as text)) as integer)
+  //   `,);
+  //   return databaseResponse.rows;
+  
+  // }
   async createCourseClass(course_id, data: any){
     const client = await this.databaseService.getPoolClient();
     try {
@@ -86,9 +104,9 @@ export class CoursesRepository{
       await client.query("begin");
       const databaseResponse = await client.query(`
         update course_class 
-        set course_id = $1, class_id = $2, semester_school_year_id = $3, teacher_id = $4
-        where course_id = $5 and class_id = $6 returning *
-      `, [course_id, class_id, data.semester_school_year_id, data.teacher_id, course_id, class_id]);
+        set class_id = $1, semester_school_year_id = $2, teacher_id = $3
+        where course_id = $4 and class_id = $5 returning *
+      `, [data.class_id, data.semester_school_year_id, data.teacher_id, course_id, class_id]);
       await client.query("commit");
       return databaseResponse.rows[0];
     } catch (error) {

@@ -22,9 +22,13 @@ export class CoursesService {
     return this.coursesRepository.update(id, course);
   }
 
-  getAllCourseClass(courseId: number) {
-    return this.coursesRepository.getAllCourseClass(courseId);
+  getAllCourseClass(courseId: number, options?: any) {
+    return this.coursesRepository.getAllCourseClass(courseId, options);
   }
+
+  // getAllCourseClassWithOption(courseId: number, options: any) {
+  //   return this.coursesRepository.getAllCourseClassWithOptions(courseId, options);
+  // }
 
   createCourseClass(courseId: number, data: any) {
     return this.coursesRepository.createCourseClass(courseId, data);

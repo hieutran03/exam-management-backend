@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDTO } from 'src/models/courses/dtos/create-course.dto';
 import { UpdateCourseDTO } from 'src/models/courses/dtos/update-course.dto';
 import PermissionGuard from 'src/core/roles/permission.guard';
 import PermissionEnum from 'src/core/roles/permission.enum';
+import { request } from 'http';
 
 @Controller('courses')
 export class CoursesController {
@@ -31,8 +32,12 @@ export class CoursesController {
   }
 
   @Get(':id/course-class')
-  getAllCourseClass(@Param('id')courseId: number) {
-    return this.coursesService.getAllCourseClass(courseId);
+  getAllCourseClass(@Param('id')courseId: number, @Req() request) {
+    const options = {
+      teacher_id: request.query.teacher_id? parseInt(request.query.teacher_id) : null,
+      ssy_id: request.query.ssy_id? parseInt(request.query.ssy_id) : null,
+    };
+    return this.coursesService.getAllCourseClass(courseId, options);
   }
 
   @UseGuards(PermissionGuard(PermissionEnum.TEACHER_MODIFY))
