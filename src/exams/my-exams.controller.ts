@@ -7,6 +7,8 @@ import { VerifyExamIdInterceptor } from './verifyExamId.interceptor';
 import { ExamResultService } from './exam-result.service';
 import { UpdateExamResultDTO } from 'src/models/exams/dtos/update-exam-result.dto';
 import { CreateExamResultDTO } from 'src/models/exams/dtos/create-exam-result.dto';
+import { UpdateStudentResultDTO } from 'src/models/exams/dtos/update-student-result.dto';
+import { CreateStudentResultDTO } from 'src/models/exams/dtos/create-studtent-result.dto';
 
 @UseInterceptors(VerifyExamIdInterceptor)
 @Controller('my-exams')
@@ -59,26 +61,44 @@ export class MyExamController{
     return await this.examResultService.findByStudentIdAndExamId(id, student_id);
   }
 
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Post(':id/results')
+  // async createExamResults(
+  //   @Param('id')id: number,
+  //   @Body()data: CreateExamResultDTO[]
+  // ){
+  //   return await this.examResultService.createMany(id, data).catch((error) => {
+  //     throw error;
+  //   });
+  // }
+
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Put(':id/results')
+  // async updateExamResults(
+  //   @Param('id')id: number,
+  //   @Body()data: UpdateExamResultDTO[]
+  // ){
+  //   return await this.examResultService.updateMany(id, data);
+  // }
+
   @UseGuards(JwtAuthenticationGuard)
   @Post(':id/results')
-  async createExamResults(
+  async createExamResult(
     @Param('id')id: number,
-    @Body()data: CreateExamResultDTO[]
+    @Body()data: CreateStudentResultDTO
   ){
-    return await this.examResultService.createMany(id, data).catch((error) => {
-      throw error;
-    });
+    return await this.examResultService.create(id, data);
   }
 
   @UseGuards(JwtAuthenticationGuard)
-  @Put(':id/results')
-  async updateExamResults(
+  @Put(':id/results/:studentId')
+  async updateExamResult(
     @Param('id')id: number,
-    @Body()data: UpdateExamResultDTO[]
+    @Param('studentId')student_id: number,
+    @Body()data: UpdateStudentResultDTO
   ){
-    return await this.examResultService.updateMany(id, data);
+    return await this.examResultService.update(id, student_id, data);
   }
-
 
   @UseGuards(JwtAuthenticationGuard)
   @Delete(':id/results/:studentId')

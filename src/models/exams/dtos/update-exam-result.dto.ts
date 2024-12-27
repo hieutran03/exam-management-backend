@@ -4,6 +4,8 @@ export class UpdateExamResultDTO {
   @IsNumber()
   student_id: number;
   @IsString()
+  class_id: string;
+  @IsString()
   student_name: string;
   @IsNumber()
   score: number;

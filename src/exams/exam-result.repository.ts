@@ -53,69 +53,105 @@ export class ExamResultRepository{
     }
   }
   
-  async create(exam_id: number, student_id: number ,data: CreateStudentResultDTO, client: PoolClient){
+  // async create(exam_id: number, student_id: number ,data: CreateStudentResultDTO, client?: PoolClient){
+  //   try {
+  //     const databaseResponse = await client.query(`
+  //       insert into exam_result(exam_id, student_id, student_name, score, score_text, note)
+  //       values($1, $2, $3, $4, $5, $6) returning *;
+  //       `, [exam_id, student_id, data.student_name, data.score, data.score_text, data.note]);
+  //     return databaseResponse.rows[0];
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  async createOne(exam_id: number, data: CreateStudentResultDTO){
+    const client = await this.databaseService.getPoolClient();
     try {
+      await client.query('begin');
       const databaseResponse = await client.query(`
-        insert into exam_result(exam_id, student_id, student_name, score, score_text, note)
-        values($1, $2, $3, $4, $5, $6) returning *;
-        `, [exam_id, student_id, data.student_name, data.score, data.score_text, data.note]);
+        insert into exam_result(exam_id, student_id, student_name, score, score_text, note, class_id)
+        values($1, $2, $3, $4, $5, $6, $7) returning *;
+        `, [exam_id, data.student_id, data.student_name, data.score, data.score_text, data.note, data.class_id]);
+      await client.query('commit');
       return databaseResponse.rows[0];
     } catch (error) {
+      if(error.code === PostgresErrorCode.UniqueViolation)
+        throw new BadRequestException('Duplicate student_id');
+      await client.query('rollback');
       throw error;
     }
   }
  
-  async createMany(exam_id: number, data: CreateExamResultDTO[]){
+  // async createMany(exam_id: number, data: CreateExamResultDTO[]){
+  //   const client = await this.databaseService.getPoolClient();
+  //   try {
+  //     await client.query('begin');
+  //     await Promise.all(
+  //       data.map((item) => 
+  //         this.create(exam_id, item.student_id, item, client)
+  //       )
+  //     );
+  //     await client.query('commit');
+  //   } catch (error) {
+  //     await client.query('rollback');
+  //     if(error.code === PostgresErrorCode.UniqueViolation){
+  //       throw new BadRequestException('Create failed');
+  //     }
+  //     throw error;
+  //   }
+  // }
+
+  // async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO, client?: PoolClient){
+  //   try {
+  //     const databaseResponse = await client.query(`
+  //       update exam_result set
+  //       student_name = $1, score = $2, score_text = $3, note = $4
+  //       where exam_id = $5 and student_id = $6 returning *;
+  //     `, [data.student_name, data.score, data.score_text, data.note, exam_id, student_id]
+  //     );
+  //     return databaseResponse.rows[0];
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  async updateOne(exam_id: number, student_id: number, data: UpdateStudentResultDTO){
     const client = await this.databaseService.getPoolClient();
     try {
       await client.query('begin');
-      await Promise.all(
-        data.map((item) => 
-          this.create(exam_id, item.student_id, item, client)
-        )
-      );
-      await client.query('commit');
-    } catch (error) {
-      await client.query('rollback');
-      if(error.code === PostgresErrorCode.UniqueViolation){
-        throw new BadRequestException('Create failed');
-      }
-      throw error;
-    }
-  }
-
-  async update(exam_id: number, student_id: number, data: UpdateStudentResultDTO, client: PoolClient){
-    try {
       const databaseResponse = await client.query(`
         update exam_result set
-        student_name = $1, score = $2, score_text = $3, note = $4
-        where exam_id = $5 and student_id = $6 returning *;
-      `, [data.student_name, data.score, data.score_text, data.note, exam_id, student_id]
+        student_name = $1, score = $2, score_text = $3, note = $4, student_id = $5, class_id = $6
+        where exam_id = $7 and student_id = $8 returning *;
+      `, [data.student_name, data.score, data.score_text, data.note,data.student_id, data.class_id,exam_id, student_id]
       );
+      await client.query('commit');
       return databaseResponse.rows[0];
     } catch (error) {
+      await client.query('rollback');
       throw error;
     }
   }
 
-  async updateMany(exam_id: number,data: UpdateExamResultDTO[]){
-    const client = await this.databaseService.getPoolClient();
-    try {
-      await client.query('begin');
-      await Promise.all(
-        data.map((item) => 
-          this.update(exam_id, item.student_id, item, client)
-        )
-      );
-      await client.query('commit');
-    } catch (error) {
-      await client.query('rollback');
-      if(error.code === PostgresErrorCode.UniqueViolation){
-        throw new BadRequestException('Duplicate student_id');
-      }
-      throw error;
-    }
-  }
+  // async updateMany(exam_id: number,data: UpdateExamResultDTO[]){
+  //   const client = await this.databaseService.getPoolClient();
+  //   try {
+  //     await client.query('begin');
+  //     await Promise.all(
+  //       data.map((item) => 
+  //         this.update(exam_id, item.student_id, item, client)
+  //       )
+  //     );
+  //     await client.query('commit');
+  //   } catch (error) {
+  //     await client.query('rollback');
+  //     if(error.code === PostgresErrorCode.UniqueViolation){
+  //       throw new BadRequestException('Duplicate student_id');
+  //     }
+  //     throw error;
+  //   }
+  // }
   async deleteByExamIdAndStudentId(exam_id: number, student_id: number){
     const client = await this.databaseService.getPoolClient();
     try {
