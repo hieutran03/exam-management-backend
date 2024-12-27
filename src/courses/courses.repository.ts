@@ -67,10 +67,21 @@ export class CoursesRepository{
       and semester_school_year_id = cast(coalesce(nullif(cast($2 as text),''), cast(semester_school_year_id as text)) as integer) 
       and teacher_id = cast(coalesce(nullif(cast($3 as text),''), cast(teacher_id as text)) as integer)
     `, [courseId, options?.ssy_id, options?.teacher_id]);
-    return databaseResponse.rows
-    
+    return databaseResponse.rows  
   }
 
+  async getCourseClassDetail(courseId: number, classId: number){
+    const databaseResponse = await this.databaseService.runQuery(`
+      select cc.*, t.name as teacher_name, c.name as course_name,
+      concat('học kỳ ', ssy.semester, ' năm học ', ssy.first_year, '-', ssy.second_year) as semester_school_year
+      from course_class cc
+      join teacher t on cc.teacher_id = t.id
+      join semester_school_year ssy on cc.semester_school_year_id = ssy.id
+      join course c on cc.course_id = c.id
+      where course_id = $1 and class_id = $2
+    `, [courseId, classId]);
+    return databaseResponse.rows[0];
+  }
   // async getAllCourseClassWithOptions(courseId: number, options: any){
   //   const databaseResponse = await this.databaseService.runQuery(`
   //     select * from course_class

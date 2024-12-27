@@ -40,6 +40,11 @@ export class CoursesController {
     return this.coursesService.getAllCourseClass(courseId, options);
   }
 
+  @Get(':id/course-class/:class_id')
+  getCourseClassDetail(@Param('id')courseId: number, @Param('class_id')class_id) {
+    return this.coursesService.getCourseClassDetail(courseId, class_id);
+  }
+
   @UseGuards(PermissionGuard(PermissionEnum.TEACHER_MODIFY))
   @Post(':id/course-class')
   createCourseClass(@Param('id')courseId: number, @Body()data: any) {

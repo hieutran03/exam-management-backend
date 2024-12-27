@@ -26,6 +26,9 @@ export class CoursesService {
     return this.coursesRepository.getAllCourseClass(courseId, options);
   }
 
+  getCourseClassDetail(courseId: number, class_id: number) {
+    return this.coursesRepository.getCourseClassDetail(courseId, class_id);
+  }
   // getAllCourseClassWithOption(courseId: number, options: any) {
   //   return this.coursesRepository.getAllCourseClassWithOptions(courseId, options);
   // }
