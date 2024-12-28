@@ -70,6 +70,8 @@ export default class ExamsRepository {
           e.exam_date, 
           c.name as course, 
           t.name as teacher,
+          e.course_id,
+          e.semester_school_year_id,
           concat(
             'Đề thi ',
             c.name,
@@ -94,6 +96,7 @@ export default class ExamsRepository {
           and
           e.id = $1;
       `, [id]);
+
       if(examResponse.rowCount === 0){
         throw new BadRequestException(`Exam with id ${id} not found`);
       }
