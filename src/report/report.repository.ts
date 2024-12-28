@@ -12,7 +12,8 @@ export class ReportRepository {
             r.title as title,
             r.total_of_exam as total_of_exam,
             r.total_of_exam_result as total_of_exam_result,
-            t.name as teacher_name
+            t.name as teacher_name,
+            r.semester_school_year_id as ssy_id
           from report r
           join teacher t on r.teacher_id = t.id
           where r.teacher_id = cast(coalesce(nullif(cast($1 as text), ''), cast (r.teacher_id as text)) as integer)
