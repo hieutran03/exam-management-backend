@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TeachersModule } from './teachers/teachers.module';
 import { QuestionsModule } from './questions/questions.module';
-import * as Joi from 'Joi';
+import * as Joi from 'joi';
 import { APP_PIPE } from '@nestjs/core';
 import { ExamsModule } from './exams/exams.module';
 import { ReportModule } from './report/report.module';
